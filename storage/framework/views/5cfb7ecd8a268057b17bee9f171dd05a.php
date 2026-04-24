@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'ศูนย์ช่วยเหลือ'); ?>
 
-@section('title', 'ศูนย์ช่วยเหลือ')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="space-y-6">
     <!-- Header -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg text-white p-8">
@@ -204,7 +202,7 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
@@ -223,5 +221,7 @@ document.getElementById('searchHelp').addEventListener('keyup', function(e) {
     });
 });
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Applications/XAMPP/xamppfiles/htdocs/student/resources/views/help.blade.php ENDPATH**/ ?>
