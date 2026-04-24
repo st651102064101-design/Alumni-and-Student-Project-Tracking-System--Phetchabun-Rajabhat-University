@@ -187,6 +187,7 @@
         .section-card .card-header { padding: 18px 18px; }
     }
 </style>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endpush
 
 @section('content')
@@ -304,19 +305,7 @@
                         <div class="col-12 col-md-6">
                             <label class="form-label">รหัสนักศึกษา <span class="text-danger">*</span></label>
                             <select name="student_id" id="student_id" required class="form-select"></select>
-                        @push('styles')
-                        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-                        @endpush
-                        @push('scripts')
-                        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-                        <script>
-                        $(document).ready(function() {
-                            $('#student_id').select2({
-                                theme: 'bootstrap-5',
-                                placeholder: 'เลือกรหัสนักศึกษา',
-                                allowClear: true,
-                                ajax: {
-                                    url: '
+                        <!-- select2 will be loaded in the scripts stack below -->
                         </div>
                         <div class="col-12 col-md-6">
                             <label class="form-label">ชื่อ-นามสกุล <span class="text-danger">*</span></label>
@@ -380,6 +369,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     let allData = [];
@@ -413,6 +403,20 @@
         // Filter events
         $('#searchFilter').on('keyup', debounce(function() { loadData(); }, 500));
         $('#statusFilter, #yearFilter').change(function() { loadData(); });
+
+        $('#student_id').select2({
+            placeholder: 'เลือกรหัสนักศึกษา',
+            allowClear: true,
+            ajax: {
+                url: '{{ route("students.list") }}',
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return { results: data.results };
+                },
+                cache: true
+            }
+        });
     });
 
     function debounce(func, wait) {
