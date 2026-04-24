@@ -18,7 +18,11 @@ class ReportController extends Controller
         $user = Auth::user();
         
         // Get user's projects (as member)
-        $myProjects = Project::whereJsonContains('members', $user->name)->get();
+        if ($user && $user->project_id) {
+            $myProjects = Project::where('id', $user->project_id)->get();
+        } else {
+            $myProjects = Project::whereJsonContains('members', $user->name)->get();
+        }
         
         // Get user's internships
         $myInternships = Internship::where('student_id', $user->name)
@@ -45,18 +49,7 @@ class ReportController extends Controller
      */
     public function myProjectReport()
     {
-        $user = Auth::user();
-        $myProjects = Project::whereJsonContains('members', $user->name)->get();
-
-        $stats = [
-            'totalProjects' => $myProjects->count(),
-            'completedProjects' => $myProjects->where('status', 'completed')->count(),
-            'inProgressProjects' => $myProjects->where('status', 'in_progress')->count(),
-            'proposalProjects' => $myProjects->where('status', 'proposal')->count(),
-            'totalProjectsByCategory' => $myProjects->groupBy('category')->map->count()->toArray(),
-        ];
-
-        return view('reports.my-projects', compact('user', 'myProjects', 'stats'));
+        return redirect()->route('projects.my');
     }
 
     public function internshipReport()

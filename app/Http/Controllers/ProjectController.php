@@ -57,8 +57,14 @@ class ProjectController extends Controller
 
             // Filter for my projects
             if ($request->filled('my')) {
-                $userName = auth()->user()->name ?? 'นายกิตติ สุขใจ'; // Mocking user name for testing
-                $projects->whereJsonContains('members', $userName);
+                $user = auth()->user();
+
+                if ($user && $user->project_id) {
+                    $projects->where('id', $user->project_id);
+                } else {
+                    $userName = $user->name ?? 'นายกิตติ สุขใจ';
+                    $projects->whereJsonContains('members', $userName);
+                }
             }
 
             return response()->json([

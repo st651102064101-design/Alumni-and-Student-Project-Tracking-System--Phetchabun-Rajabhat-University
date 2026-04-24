@@ -1151,6 +1151,7 @@ $(document).ready(function(){
     var selectedIds = [];
     var members = [];
     var currentViewProject = null;
+    var currentUserName = '<?php echo e(auth()->user()->name ?? ''); ?>';
     
     // Filter state
     var filterStatus = '';
@@ -1476,15 +1477,26 @@ $(document).ready(function(){
         $('#membersHidden').val(JSON.stringify(members));
     }
 
+    function addMembersFromInput() {
+        var input = $('#memberInput').val().trim();
+        if (!input) return;
+
+        input.split(',').map(function(name) {
+            return name.trim();
+        }).filter(function(name) {
+            return name.length > 0 && !members.includes(name);
+        }).forEach(function(name) {
+            members.push(name);
+        });
+
+        renderMemberTags();
+        $('#memberInput').val('');
+    }
+
     $('#memberInput').on('keydown', function(e) {
         if (e.key === 'Enter' || e.key === ',') {
             e.preventDefault();
-            var val = $(this).val().trim().replace(',', '');
-            if (val && !members.includes(val)) {
-                members.push(val);
-                renderMemberTags();
-            }
-            $(this).val('');
+            addMembersFromInput();
         }
     });
 
@@ -1514,7 +1526,7 @@ $(document).ready(function(){
     function resetForm() {
         $('#projectForm')[0].reset();
         $('#project_id').val('');
-        members = [];
+        members = currentUserName ? [currentUserName] : [];
         renderMemberTags();
     }
 

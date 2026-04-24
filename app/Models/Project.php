@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Student;
 
 class Project extends Model
 {
@@ -33,6 +34,18 @@ class Project extends Model
         'academic_year' => 'integer',
         'score' => 'integer',
     ];
+
+    public function students()
+    {
+        return $this->hasMany(Student::class, 'project_id');
+    }
+
+    public function getMemberNamesAttribute(): array
+    {
+        return $this->students->map(function (Student $student) {
+            return trim((string) ($student->first_name . ' ' . $student->last_name));
+        })->all();
+    }
 
     /**
      * Get status label in Thai

@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Project;
 
 class Student extends Authenticatable
 {
     use HasFactory;
 
-    protected $table = 'wp_students_manager';
+    protected $connection = 'wordpress';
+    protected $table = 'students_manager';
 
     protected $fillable = [
         'id',
@@ -21,7 +22,23 @@ class Student extends Authenticatable
         'phone',
         'photo_id',
         'attachments',
+        'project_id',
         'created_at',
         'updated_at',
     ];
+
+    protected $casts = [
+        'project_id' => 'integer',
+        'attachments' => 'array',
+    ];
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id');
+    }
+
+    public function getNameAttribute(): string
+    {
+        return trim((string) ($this->first_name . ' ' . $this->last_name));
+    }
 }

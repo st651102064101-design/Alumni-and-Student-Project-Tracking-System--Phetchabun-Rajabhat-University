@@ -18,9 +18,9 @@
             <i class="bi bi-folder-fill"></i>
             <span>โครงงาน</span>
         </a>
-        <a href="<?php echo e(route('reports.myProjects')); ?>" class="yt-mini-item <?php echo e(request()->is('reports/my-projects') ? 'active' : ''); ?>" title="รายงานของฉัน">
+        <a href="<?php echo e(route('projects.my')); ?>" class="yt-mini-item <?php echo e(request()->is('projects/my') ? 'active' : ''); ?>" title="โครงงานของฉัน">
             <i class="bi bi-journal-text"></i>
-            <span>รายงาน</span>
+            <span>โครงงานของฉัน</span>
         </a>
         <a href="<?php echo e(url('/internships')); ?>" class="yt-mini-item <?php echo e(request()->is('internships*') ? 'active' : ''); ?>" title="ฝึกงาน">
             <i class="bi bi-building"></i>
@@ -89,9 +89,9 @@
                 <span>สถานที่ฝึกงาน</span>
             </a>
 
-            <a href="<?php echo e(route('reports.myProjects')); ?>" class="yt-nav-item <?php echo e(request()->is('reports/my-projects') ? 'active' : ''); ?>">
+            <a href="<?php echo e(route('projects.my')); ?>" class="yt-nav-item <?php echo e(request()->is('projects/my') ? 'active' : ''); ?>">
                 <i class="bi bi-journal-text"></i>
-                <span>รายงานของฉัน</span>
+                <span>โครงงานของฉัน</span>
             </a>
         </div>
 

@@ -592,7 +592,7 @@
         <h1>สาขาวิชาวิทยาการคอมพิวเตอร์</h1>
         <p>ระบบติดตามศิษย์เก่าและโครงงานนักศึกษา มหาวิทยาลัยราชภัฏเพชรบุรณ์</p>
         <div class="hero-actions">
-            <a href="{{ route('reports.myProjects') }}" class="apple-btn apple-btn-primary">
+            <a href="{{ route('projects.my') }}" class="apple-btn apple-btn-primary">
                 <i class="bi bi-journal-text"></i>
                 โครงงานของฉัน
             </a>
@@ -798,7 +798,7 @@
             <i class="bi bi-journal-code"></i>
             โครงงานนักศึกษา
         </a>
-        <a href="{{ route('reports.myProjects') }}" class="apple-btn apple-btn-secondary">
+        <a href="{{ route('projects.my') }}" class="apple-btn apple-btn-secondary">
             <i class="bi bi-journal-text"></i>
             โครงงานของฉัน
         </a>

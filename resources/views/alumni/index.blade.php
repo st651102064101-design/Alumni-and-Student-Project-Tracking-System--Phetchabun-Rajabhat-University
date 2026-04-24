@@ -745,6 +745,9 @@
                 <button type="button" class="apple-btn apple-btn-secondary" id="refreshBtn">
                     <i class="bi bi-arrow-clockwise"></i> รีเฟรช
                 </button>
+                <a href="{{ route('projects.my') }}" class="apple-btn apple-btn-secondary">
+                    <i class="bi bi-person"></i> โครงงานของฉัน
+                </a>
                 <button type="button" class="apple-btn apple-btn-primary" id="addAlumniBtn">
                     <i class="bi bi-plus-lg"></i> เพิ่มศิษย์เก่า
                 </button>
