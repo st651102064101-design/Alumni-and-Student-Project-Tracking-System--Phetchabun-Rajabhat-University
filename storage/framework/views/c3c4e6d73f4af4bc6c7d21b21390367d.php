@@ -1,145 +1,360 @@
 <?php $__env->startSection('title', 'จัดการข้อมูลสถานที่ฝึกงาน'); ?>
 
-<?php $__env->startSection('content'); ?>
-<div class="bg-white rounded-lg shadow-sm">
-    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50 rounded-t-lg">
-        <h2 class="text-xl font-semibold text-gray-800">
-            <i class="fas fa-building mr-2 text-blue-600"></i> รายงานและจัดการสถานที่ฝึกงาน
-        </h2>
-        <div class="flex gap-2">
-            <button id="btnBulkDelete" class="hidden sm:inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors shadow-sm text-sm" onclick="bulkDelete()">
-                <i class="fas fa-trash-alt mr-2"></i> ลบที่เลือก (<span id="selectedCount">0</span>)
-            </button>
-            <button class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm text-sm" onclick="openModal()">
-                <i class="fas fa-plus mr-2"></i> เพิ่มข้อมูล
-            </button>
-        </div>
-    </div>
+<?php $__env->startPush('styles'); ?>
+<style>
+    .apple-dashboard {
+        padding: 24px 20px 32px;
+    }
 
-    <!-- Filters -->
-    <div class="p-6 border-b border-gray-200 bg-gray-50/50">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">ค้นหา</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
-                    </div>
-                    <input type="text" id="searchFilter" class="block w-full pl-10 rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="รหัส, ชื่อ, หรือบริษัท...">
+    .apple-dashboard > * + * {
+        margin-top: 24px;
+    }
+
+    .apple-hero {
+        position: relative;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        color: #f8fafc;
+        border-radius: 28px;
+        overflow: hidden;
+        padding: 32px;
+        box-shadow: 0 24px 70px rgba(15, 23, 42, 0.16);
+    }
+
+    .apple-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top right, rgba(96, 165, 250, 0.24), transparent 35%), radial-gradient(circle at bottom left, rgba(74, 222, 128, 0.18), transparent 25%);
+        pointer-events: none;
+    }
+
+    .apple-hero .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .apple-hero h1 {
+        font-size: 2.35rem;
+        line-height: 1.05;
+        margin-bottom: 0.75rem;
+    }
+
+    .apple-hero p {
+        color: rgba(226, 232, 240, 0.9);
+        max-width: 60ch;
+        margin-bottom: 1.75rem;
+    }
+
+    .hero-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .hero-stat {
+        flex: 1 1 220px;
+        min-width: 190px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 22px;
+        padding: 20px 22px;
+        box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .hero-stat .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .hero-stat .stat-label {
+        color: #475569;
+        margin-top: 0.35rem;
+        font-size: 0.95rem;
+    }
+
+    .section-card {
+        background: #ffffff;
+        border-radius: 28px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.06);
+        overflow: hidden;
+    }
+
+    .section-card .card-header {
+        padding: 20px 24px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .section-card .card-header h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .filter-row {
+        display: grid;
+        gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+        .filter-row {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    .data-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .data-table-wrapper table {
+        min-width: 780px;
+        margin-bottom: 0;
+    }
+
+    .content-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+        border: 1px solid #e2e8f0;
+        margin-bottom: 20px;
+    }
+
+    .content-card h2 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #0f172a;
+    }
+
+    .chart-container {
+        position: relative;
+        width: 100%;
+        min-height: 240px;
+    }
+
+    .chart-container canvas {
+        max-height: 320px;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .status-badge.pending { background: #ffedd5; color: #b45309; }
+    .status-badge.in_progress { background: #dbeafe; color: #1d4ed8; }
+    .status-badge.completed { background: #d1fae5; color: #166534; }
+
+    .btn-ghost {
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #0f172a;
+    }
+
+    .btn-ghost:hover {
+        background: #f1f5f9;
+    }
+
+    .table-empty {
+        min-height: 220px;
+    }
+
+    @media (max-width: 767px) {
+        .apple-dashboard { padding: 18px 14px 24px; }
+        .hero-stats { flex-direction: column; }
+        .section-card .card-header { padding: 18px 18px; }
+    }
+</style>
+<?php $__env->stopPush(); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="apple-dashboard">
+    <div class="apple-hero">
+        <div class="hero-content">
+            <h1>จัดการและรายงานสถานที่ฝึกงาน</h1>
+            <p>เพิ่ม แก้ไข และตรวจสอบข้อมูลสถานที่ฝึกงานด้วยอินเทอร์เฟซที่สวยงามและทันสมัยเหมือนหน้าแดชบอร์ดหลัก</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="stat-value" id="summaryTotal">0</div>
+                    <div class="stat-label">รายการทั้งหมด</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="stat-value" id="summaryInProgress">0</div>
+                    <div class="stat-label">กำลังฝึกงาน</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="stat-value" id="summaryCompleted">0</div>
+                    <div class="stat-label">เสร็จสิ้น</div>
                 </div>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">สถานะ</label>
-                <select id="statusFilter" class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                    <option value="">ทั้งหมด</option>
-                    <option value="pending">รอดำเนินการ</option>
-                    <option value="in_progress">กำลังฝึกงาน</option>
-                    <option value="completed">เสร็จสิ้น</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">ปีการศึกษา</label>
-                <select id="yearFilter" class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                    <option value="">ทั้งหมด</option>
-                    <?php for($year = date('Y') + 543; $year >= date('Y') + 543 - 5; $year--): ?>
-                        <option value="<?php echo e($year); ?>"><?php echo e($year); ?></option>
-                    <?php endfor; ?>
-                </select>
-            </div>
         </div>
     </div>
 
-    <!-- Table -->
-    <div class="p-6">
-        <div class="overflow-x-auto rounded-lg border border-gray-200">
-            <table class="min-w-full divide-y divide-gray-200" id="dataTable">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="w-12 px-6 py-3 text-center">
-                            <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">รหัสนักศึกษา/ชื่อ</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">บริษัท/ตำแหน่ง</th>
-                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">ปีการศึกษา</th>
-                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">สถานะ</th>
-                        <th scope="col" class="relative px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">จัดการ</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200 text-sm" id="tableBody">
-                    <tr><td colspan="6" class="px-6 py-10 text-center"><i class="fas fa-spinner fa-spin mr-2"></i> กำลังโหลดข้อมูล...</td></tr>
-                </tbody>
-            </table>
+    <div class="section-card">
+        <div class="card-header">
+            <h2><i class="fas fa-building text-primary"></i> รายงานและจัดการสถานที่ฝึกงาน</h2>
+            <div class="d-flex flex-wrap gap-2">
+                <button id="btnBulkDelete" class="btn btn-danger d-none" onclick="bulkDelete()">
+                    <i class="fas fa-trash-alt me-2"></i> ลบที่เลือก (<span id="selectedCount">0</span>)
+                </button>
+                <button id="btnAddInternship" class="btn btn-primary" type="button">
+                    <i class="fas fa-plus me-2"></i> เพิ่มข้อมูล
+                </button>
+            </div>
+        </div>
+
+        <div class="px-4 py-4 border-bottom">
+            <div class="filter-row">
+                <div>
+                    <label class="form-label">ค้นหา</label>
+                    <div class="position-relative">
+                        <i class="fas fa-search position-absolute top-50 translate-middle-y" style="left: 14px; color:#9ca3af;"></i>
+                        <input type="text" id="searchFilter" class="form-control ps-5" placeholder="รหัส, ชื่อ, หรือบริษัท...">
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">สถานะ</label>
+                    <select id="statusFilter" class="form-select">
+                        <option value="">ทั้งหมด</option>
+                        <option value="pending">รอดำเนินการ</option>
+                        <option value="in_progress">กำลังฝึกงาน</option>
+                        <option value="completed">เสร็จสิ้น</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">ปีการศึกษา</label>
+                    <select id="yearFilter" class="form-select">
+                        <option value="">ทั้งหมด</option>
+                        <?php for($year = date('Y') + 543; $year >= date('Y') + 543 - 5; $year--): ?>
+                            <option value="<?php echo e($year); ?>"><?php echo e($year); ?></option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-4 py-4">
+            <div class="content-card">
+                <h2><i class="fas fa-chart-pie text-primary"></i> สถานะการฝึกงาน</h2>
+                <div class="chart-container">
+                    <canvas id="internshipStatusChart"></canvas>
+                </div>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="table table-hover align-middle mb-0" id="dataTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="text-center" style="width: 60px;">
+                                <input type="checkbox" id="selectAll">
+                            </th>
+                            <th scope="col">รหัสนักศึกษา / ชื่อ</th>
+                            <th scope="col">บริษัท / ตำแหน่ง</th>
+                            <th scope="col" class="text-center">ปีการศึกษา</th>
+                            <th scope="col" class="text-center">สถานะ</th>
+                            <th scope="col" class="text-end">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr><td colspan="6" class="text-center py-5 text-secondary"><i class="fas fa-spinner fa-spin me-2"></i> กำลังโหลดข้อมูล...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Modal -->
-<div id="formModal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeModal()"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+<div id="formModal" class="position-fixed top-0 start-0 vw-100 vh-100 bg-dark bg-opacity-50 d-none overflow-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true" style="z-index: 1050;">
+    <div class="d-flex align-items-center justify-content-center min-vh-100 p-3">
+        <div class="bg-white rounded-4 shadow" style="width: 100%; max-width: 760px;">
             <form id="dataForm" onsubmit="saveData(event)">
                 <?php echo csrf_field(); ?>
                 <input type="hidden" id="entityId" name="id">
-                
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 border-b border-gray-200">
-                    <h3 class="text-xl leading-6 font-semibold text-gray-900 flex items-center" id="modal-title">
-                        <i class="fas fa-edit mr-2 text-blue-600"></i> <span id="modalTitleText">เพิ่มข้อมูล</span>
+
+                <div class="border-bottom px-4 py-3">
+                    <h3 class="h5 mb-0 d-flex align-items-center gap-2" id="modal-title">
+                        <i class="fas fa-edit text-primary"></i> <span id="modalTitleText">เพิ่มข้อมูล</span>
                     </h3>
                 </div>
 
-                <div class="px-6 py-4 space-y-4 max-h-[60vh] overflow-y-auto">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">รหัสนักศึกษา <span class="text-red-500">*</span></label>
-                            <input type="text" name="student_id" id="student_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <div class="px-4 py-4">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">รหัสนักศึกษา <span class="text-danger">*</span></label>
+                            <select name="student_id" id="student_id" required class="form-select"></select>
+                        <?php $__env->startPush('styles'); ?>
+                        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+                        <?php $__env->stopPush(); ?>
+                        <?php $__env->startPush('scripts'); ?>
+                        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+                        <script>
+                        $(document).ready(function() {
+                            $('#student_id').select2({
+                                theme: 'bootstrap-5',
+                                placeholder: 'เลือกรหัสนักศึกษา',
+                                allowClear: true,
+                                ajax: {
+                                    url: '
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">ชื่อ-นามสกุล <span class="text-red-500">*</span></label>
-                            <input type="text" name="student_name" id="student_name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">ชื่อ-นามสกุล <span class="text-danger">*</span></label>
+                            <input type="text" name="student_name" id="student_name" required class="form-control">
                         </div>
-                    </div>
-                    <div class="grid grid-cols-1 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">ชื่อบริษัท/หน่วยงาน <span class="text-red-500">*</span></label>
-                            <input type="text" name="company_name" id="company_name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <div class="col-12">
+                            <label class="form-label">ชื่อบริษัท/หน่วยงาน <span class="text-danger">*</span></label>
+                            <input type="text" name="company_name" id="company_name" required class="form-control">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">ที่อยู่หน่วยงาน</label>
-                            <textarea name="company_address" id="company_address" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                        <div class="col-12">
+                            <label class="form-label">ที่อยู่หน่วยงาน</label>
+                            <textarea name="company_address" id="company_address" rows="2" class="form-control"></textarea>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">ตำแหน่งที่ฝึกงาน</label>
-                            <input type="text" name="job_role" id="job_role" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <div class="col-12">
+                            <label class="form-label">ตำแหน่งที่ฝึกงาน</label>
+                            <input type="text" name="job_role" id="job_role" class="form-control">
                         </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">วันที่เริ่มฝึกงาน</label>
-                            <input type="date" name="start_date" id="start_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">วันที่เริ่มฝึกงาน</label>
+                            <input type="date" name="start_date" id="start_date" class="form-control">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">วันสิ้นสุดฝึกงาน</label>
-                            <input type="date" name="end_date" id="end_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">วันสิ้นสุดฝึกงาน</label>
+                            <input type="date" name="end_date" id="end_date" class="form-control">
                         </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">ปีการศึกษา <span class="text-red-500">*</span></label>
-                            <input type="number" name="academic_year" id="academic_year" value="<?php echo e(date('Y') + 543); ?>" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label">ปีการศึกษา <span class="text-danger">*</span></label>
+                            <input type="number" name="academic_year" id="academic_year" value="<?php echo e(date('Y') + 543); ?>" required class="form-control">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">ภาคเรียน <span class="text-red-500">*</span></label>
-                            <select name="semester" id="semester" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label">ภาคเรียน <span class="text-danger">*</span></label>
+                            <select name="semester" id="semester" required class="form-select">
                                 <option value="1">1</option>
                                 <option value="2" selected>2</option>
                                 <option value="3">3</option>
                             </select>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">สถานะ <span class="text-red-500">*</span></label>
-                            <select name="status" id="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label">สถานะ <span class="text-danger">*</span></label>
+                            <select name="status" id="status" required class="form-select">
                                 <option value="pending">รอดำเนินการ</option>
                                 <option value="in_progress" selected>กำลังฝึกงาน</option>
                                 <option value="completed">เสร็จสิ้น</option>
@@ -147,11 +362,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-gray-200">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
-                        <i class="fas fa-save mr-2 mt-1"></i> บันทึกข้อมูล
+
+                <div class="border-top px-4 py-3 d-flex flex-column flex-sm-row justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i> บันทึกข้อมูล
                     </button>
-                    <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+                    <button type="button" onclick="closeModal()" class="btn btn-outline-secondary">
                         ยกเลิก
                     </button>
                 </div>
@@ -162,12 +378,24 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('scripts'); ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     let allData = [];
+    let statusChart = null;
 
     // Initialize
     $(document).ready(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || ''
+            }
+        });
+
         loadData();
+
+        $('#btnAddInternship').on('click', function() {
+            openModal();
+        });
 
         // Checkbox events
         $('#selectAll').change(function() {
@@ -198,23 +426,84 @@
         const count = $('.row-checkbox:checked').length;
         $('#selectedCount').text(count);
         if (count > 0) {
-            $('#btnBulkDelete').removeClass('hidden').addClass('inline-flex');
+            $('#btnBulkDelete').removeClass('d-none');
         } else {
-            $('#btnBulkDelete').addClass('hidden').removeClass('inline-flex');
+            $('#btnBulkDelete').addClass('d-none');
         }
     }
 
+    function updateSummaryStats(data) {
+        const total = data.length;
+        const inProgress = data.filter(item => item.status === 'in_progress').length;
+        const completed = data.filter(item => item.status === 'completed').length;
+
+        $('#summaryTotal').text(total);
+        $('#summaryInProgress').text(inProgress);
+        $('#summaryCompleted').text(completed);
+    }
+
+    function renderStatusChart(data) {
+        const counts = { pending: 0, in_progress: 0, completed: 0 };
+        data.forEach(item => {
+            if (counts[item.status] !== undefined) {
+                counts[item.status] += 1;
+            }
+        });
+
+        const labels = ['รอดำเนินการ', 'กำลังฝึกงาน', 'เสร็จสิ้น'];
+        const values = [counts.pending, counts.in_progress, counts.completed];
+
+        const ctx = document.getElementById('internshipStatusChart').getContext('2d');
+        if (statusChart) {
+            statusChart.data.datasets[0].data = values;
+            statusChart.update();
+            return;
+        }
+
+        statusChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: ['#f59e0b', '#2563eb', '#16a34a'],
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#475569',
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + ' ราย';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     function getStatusBadge(status) {
-        let color = 'gray', label = status;
-        if (status === 'pending') { color = 'orange'; label = 'รอดำเนินการ'; }
-        else if (status === 'in_progress') { color = 'blue'; label = 'กำลังฝึกงาน'; }
-        else if (status === 'completed') { color = 'green'; label = 'เสร็จสิ้น'; }
-        
-        return `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-${color}-100 text-${color}-800 border border-${color}-200">${label}</span>`;
+        let label = status;
+        if (status === 'pending') { label = 'รอดำเนินการ'; }
+        else if (status === 'in_progress') { label = 'กำลังฝึกงาน'; }
+        else if (status === 'completed') { label = 'เสร็จสิ้น'; }
+        return `<span class="status-badge ${status}">${label}</span>`;
     }
 
     function loadData() {
-        $('#tableBody').html('<tr><td colspan="6" class="px-6 py-10 text-center text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i> กำลังโหลดข้อมูล...</td></tr>');
+        $('#tableBody').html('<tr><td colspan="6" class="text-center py-5 text-secondary"><i class="fas fa-spinner fa-spin me-2"></i> กำลังโหลดข้อมูล...</td></tr>');
         
         $.ajax({
             url: '<?php echo e(route("internships.data")); ?>',
@@ -227,46 +516,48 @@
             success: function(response) {
                 allData = response.data;
                 renderTable(allData);
+                updateSummaryStats(allData);
+                renderStatusChart(allData);
             },
             error: function() {
-                $('#tableBody').html('<tr><td colspan="6" class="px-6 py-10 text-center text-red-500"><i class="fas fa-exclamation-circle mr-2"></i> เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>');
+                $('#tableBody').html('<tr><td colspan="6" class="text-center py-5 text-danger"><i class="fas fa-exclamation-circle me-2"></i> เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>');
             }
         });
     }
 
     function renderTable(data) {
         if (!data || data.length === 0) {
-            $('#tableBody').html('<tr><td colspan="6" class="px-6 py-10 text-center text-gray-500"><div class="flex flex-col items-center"><i class="fas fa-inbox text-4xl mb-3 text-gray-300"></i><p>ไม่พบข้อมูล</p></div></td></tr>');
+            $('#tableBody').html('<tr><td colspan="6" class="text-center py-5 text-secondary"><div class="d-flex flex-column align-items-center gap-3"><i class="fas fa-inbox fa-2x text-secondary"></i><p class="mb-0">ไม่พบข้อมูล</p></div></td></tr>');
             return;
         }
 
         let html = '';
         data.forEach(item => {
             html += `
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                        <input type="checkbox" class="row-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" value="${item.id}">
+                <tr>
+                    <td class="text-center align-middle">
+                        <input type="checkbox" class="form-check-input row-checkbox" value="${item.id}">
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">${item.student_name}</div>
-                        <div class="text-sm text-gray-500">${item.student_id || '-'}</div>
+                    <td class="align-middle">
+                        <div class="fw-semibold">${item.student_name}</div>
+                        <div class="text-secondary small">${item.student_id || '-'}</div>
                     </td>
-                    <td class="px-6 py-4">
-                        <div class="text-sm font-medium text-gray-900">${item.company_name}</div>
-                        <div class="text-sm text-gray-500"><i class="fas fa-briefcase mr-1"></i>${item.job_role || '-'}</div>
+                    <td class="align-middle">
+                        <div class="fw-semibold">${item.company_name}</div>
+                        <div class="text-secondary small"><i class="fas fa-briefcase me-1"></i>${item.job_role || '-'}</div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                        <div class="text-sm text-gray-900">${item.academic_year || '-'} / ${item.semester || '-'}</div>
+                    <td class="text-center align-middle">
+                        <div class="fw-semibold">${item.academic_year || '-'} / ${item.semester || '-'}</div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                    <td class="text-center align-middle">
                         ${getStatusBadge(item.status)}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div class="flex justify-end gap-2">
-                            <button onclick="editData(${item.id})" class="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition-colors" title="แก้ไข">
+                    <td class="text-end align-middle">
+                        <div class="btn-group" role="group" aria-label="Actions">
+                            <button type="button" onclick="editData(${item.id})" class="btn btn-sm btn-outline-primary" title="แก้ไข">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button onclick="deleteData(${item.id})" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition-colors" title="ลบ">
+                            <button type="button" onclick="deleteData(${item.id})" class="btn btn-sm btn-outline-danger" title="ลบ">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </div>
@@ -283,12 +574,15 @@
         $('#entityId').val('');
         $('#dataForm')[0].reset();
         $('#modalTitleText').text('เพิ่มข้อมูลสถานที่ฝึกงาน');
-        $('#formModal').removeClass('hidden');
+        $('#formModal').removeClass('d-none');
     }
 
     function closeModal() {
-        $('#formModal').addClass('hidden');
+        $('#formModal').addClass('d-none');
     }
+
+    window.openModal = openModal;
+    window.closeModal = closeModal;
 
     function editData(id) {
         const item = allData.find(d => d.id == id);
@@ -307,7 +601,7 @@
         $('#status').val(item.status);
         
         $('#modalTitleText').text('แก้ไขข้อมูลสถานที่ฝึกงาน');
-        $('#formModal').removeClass('hidden');
+        $('#formModal').removeClass('d-none');
     }
 
     function saveData(e) {

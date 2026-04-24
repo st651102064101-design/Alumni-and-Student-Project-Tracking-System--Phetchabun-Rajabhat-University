@@ -79,6 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::post('alumni/bulk-delete', [App\Http\Controllers\AlumniController::class, 'bulkDestroy'])->name('alumni.bulkDestroy');
 
     // Internships routes (สถานที่ฝึกงาน)
+    Route::get('students/list', [\App\Http\Controllers\StudentController::class, 'list'])->name('students.list');
     Route::get('internships', [App\Http\Controllers\InternshipController::class, 'index'])->name('internships.index');
     Route::get('internships/data', [App\Http\Controllers\InternshipController::class, 'data'])->name('internships.data');
     Route::post('internships', [App\Http\Controllers\InternshipController::class, 'store'])->name('internships.store');
