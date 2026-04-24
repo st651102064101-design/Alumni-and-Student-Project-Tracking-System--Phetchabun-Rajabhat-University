@@ -15,7 +15,8 @@ class StudentController extends Controller
         $results = $students->map(function($s) {
             return [
                 'id' => $s->std_id,
-                'text' => $s->std_id . ' - ' . trim($s->first_name . ' ' . $s->last_name)
+                'text' => $s->std_id . ' - ' . trim($s->first_name . ' ' . $s->last_name),
+                'student_name' => trim($s->first_name . ' ' . $s->last_name)
             ];
         });
         return response()->json(['results' => $results]);

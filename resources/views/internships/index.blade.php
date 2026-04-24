@@ -177,6 +177,38 @@
         background: #f1f5f9;
     }
 
+    .action-buttons {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .action-buttons .btn {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        border-radius: 50%;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .action-buttons .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .action-buttons .btn-outline-primary {
+        color: #2563eb;
+        border-color: rgba(37, 99, 235, 0.35);
+    }
+
+    .action-buttons .btn-outline-danger {
+        color: #dc2626;
+        border-color: rgba(220, 38, 38, 0.35);
+    }
+
     .table-empty {
         min-height: 220px;
     }
@@ -307,10 +339,7 @@
                             <select name="student_id" id="student_id" required class="form-select"></select>
                         <!-- select2 will be loaded in the scripts stack below -->
                         </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label">ชื่อ-นามสกุล <span class="text-danger">*</span></label>
-                            <input type="text" name="student_name" id="student_name" required class="form-control">
-                        </div>
+                        <input type="hidden" name="student_name" id="student_name">
                         <div class="col-12">
                             <label class="form-label">ชื่อบริษัท/หน่วยงาน <span class="text-danger">*</span></label>
                             <input type="text" name="company_name" id="company_name" required class="form-control">
@@ -416,6 +445,15 @@
                 },
                 cache: true
             }
+        });
+
+        $('#student_id').on('select2:select', function(e) {
+            const data = e.params.data;
+            $('#student_name').val(data.student_name || '');
+        });
+
+        $('#student_id').on('select2:unselect', function() {
+            $('#student_name').val('');
         });
     });
 
@@ -559,11 +597,11 @@
                         ${getStatusBadge(item.status)}
                     </td>
                     <td class="text-end align-middle">
-                        <div class="btn-group" role="group" aria-label="Actions">
-                            <button type="button" onclick="editData(${item.id})" class="btn btn-sm btn-outline-primary" title="แก้ไข">
+                        <div class="action-buttons" role="group" aria-label="Actions">
+                            <button type="button" onclick="editData(${item.id})" class="btn btn-outline-primary" title="แก้ไข">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button type="button" onclick="deleteData(${item.id})" class="btn btn-sm btn-outline-danger" title="ลบ">
+                            <button type="button" onclick="deleteData(${item.id})" class="btn btn-outline-danger" title="ลบ">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </div>
@@ -579,6 +617,8 @@
     function openModal() {
         $('#entityId').val('');
         $('#dataForm')[0].reset();
+        $('#student_id').val(null).trigger('change');
+        $('#student_name').val('');
         $('#modalTitleText').text('เพิ่มข้อมูลสถานที่ฝึกงาน');
         $('#formModal').removeClass('d-none');
     }
@@ -595,7 +635,9 @@
         if (!item) return;
 
         $('#entityId').val(item.id);
-        $('#student_id').val(item.student_id);
+        const optionText = `${item.student_id} - ${item.student_name}`;
+        const newOption = new Option(optionText, item.student_id, true, true);
+        $('#student_id').append(newOption).trigger('change');
         $('#student_name').val(item.student_name);
         $('#company_name').val(item.company_name);
         $('#company_address').val(item.company_address);
