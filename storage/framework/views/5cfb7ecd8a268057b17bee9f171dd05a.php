@@ -1,203 +1,509 @@
 <?php $__env->startSection('title', 'ศูนย์ช่วยเหลือ'); ?>
 
+<?php $__env->startPush('styles'); ?>
+<style>
+    :root {
+        --apple-card: #ffffff;
+        --apple-text: #1d1d1f;
+        --apple-text-secondary: #86868b;
+        --apple-blue: #0071e3;
+        --apple-blue-hover: #0077ed;
+        --apple-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        --apple-shadow-hover: 0 12px 40px rgba(0,0,0,0.12);
+        --apple-radius: 20px;
+    }
+
+    .help-container { padding: 0; }
+
+    /* Header */
+    .help-header {
+        background: linear-gradient(135deg, #0071e3 0%, #0077ed 100%);
+        border-radius: var(--apple-radius);
+        padding: 50px 40px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: var(--apple-shadow);
+    }
+
+    .help-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .help-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* Search */
+    .search-card {
+        background: var(--apple-card);
+        border-radius: var(--apple-radius);
+        padding: 24px;
+        box-shadow: var(--apple-shadow);
+        margin-bottom: 30px;
+        border: 1px solid #f0f0f0;
+    }
+
+    .search-input-wrapper {
+        position: relative;
+    }
+
+    .search-input-wrapper input {
+        width: 100%;
+        padding: 14px 16px 14px 44px;
+        font-size: 1rem;
+        border-radius: 12px;
+        border: 1.5px solid #e5e5e7;
+        background: #f5f5f7;
+        transition: all 0.3s ease;
+    }
+
+    .search-input-wrapper input:focus {
+        outline: none;
+        border-color: var(--apple-blue);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(0,113,227,0.1);
+    }
+
+    .search-input-wrapper::before {
+        content: '\f002';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 400;
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--apple-text-secondary);
+        font-size: 0.9rem;
+    }
+
+    /* Layout Grid */
+    .help-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 24px;
+    }
+
+    @media (max-width: 1024px) {
+        .help-layout {
+            grid-template-columns: 1fr;
+        }
+        .help-sidebar {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .help-layout {
+            grid-template-columns: 1fr;
+        }
+        .help-sidebar {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Sidebar */
+    .help-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        position: sticky;
+        top: 20px;
+        height: fit-content;
+    }
+
+    .help-sidebar h3 {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--apple-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 8px 0;
+        margin-bottom: 4px;
+        display: none;
+    }
+
+    .nav-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        background: var(--apple-card);
+        border: 1px solid #f0f0f0;
+        border-radius: 12px;
+        color: var(--apple-text);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        text-align: left;
+        width: 100%;
+    }
+
+    .nav-btn:hover {
+        background: #f5f5f7;
+        transform: translateX(4px);
+        box-shadow: var(--apple-shadow);
+    }
+
+    .nav-btn i {
+        font-size: 1.1rem;
+    }
+
+    /* Content */
+    .help-content {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .help-section {
+        background: var(--apple-card);
+        border-radius: var(--apple-radius);
+        padding: 32px;
+        box-shadow: var(--apple-shadow);
+        border: 1px solid #f0f0f0;
+        transition: all 0.3s ease;
+    }
+
+    .help-section:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--apple-shadow-hover);
+    }
+
+    .help-section h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--apple-text);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .help-section h2 i {
+        font-size: 1.3rem;
+    }
+
+    .help-subsection {
+        margin-bottom: 20px;
+    }
+
+    .help-subsection:last-child {
+        margin-bottom: 0;
+    }
+
+    .help-subsection h3 {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--apple-text);
+        margin-bottom: 8px;
+    }
+
+    .help-subsection p,
+    .help-subsection li {
+        font-size: 0.95rem;
+        color: var(--apple-text-secondary);
+        line-height: 1.6;
+    }
+
+    .help-subsection ul,
+    .help-subsection ol {
+        margin-left: 20px;
+        space-y: 4px;
+    }
+
+    .help-subsection li {
+        margin-bottom: 6px;
+    }
+
+    .code-block {
+        background: #f5f5f7;
+        padding: 12px 16px;
+        border-radius: 8px;
+        border-left: 3px solid var(--apple-blue);
+        margin: 12px 0;
+        font-family: 'Monaco', 'Menlo', monospace;
+        font-size: 0.85rem;
+        overflow-x: auto;
+    }
+
+    .status-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .status-item {
+        background: #f5f5f7;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        color: var(--apple-text-secondary);
+    }
+
+    /* Support Section */
+    .support-section {
+        background: linear-gradient(135deg, #f5f5f7 0%, #ffffff 100%);
+        border-radius: var(--apple-radius);
+        padding: 32px;
+        box-shadow: var(--apple-shadow);
+        border: 1px solid #e5e5e7;
+    }
+
+    .support-section h2 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--apple-blue);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .support-section p {
+        font-size: 0.95rem;
+        color: var(--apple-text-secondary);
+        margin-bottom: 16px;
+    }
+
+    .support-info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .support-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--apple-text);
+        font-size: 0.9rem;
+    }
+
+    .support-item i {
+        width: 20px;
+        text-align: center;
+        color: var(--apple-blue);
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+</style>
+<?php $__env->stopPush(); ?>
+
 <?php $__env->startSection('content'); ?>
-<div class="space-y-6">
+<div class="help-container">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg text-white p-8">
-        <h1 class="text-3xl font-bold mb-2">
-            <i class="fas fa-question-circle mr-2"></i> ศูนย์ช่วยเหลือและคำถามที่พบบ่อย
+    <div class="help-header animate-in">
+        <h1>
+            <i class="fas fa-question-circle"></i> ศูนย์ช่วยเหลือและคำถามที่พบบ่อย
         </h1>
-        <p class="text-blue-100">ค้นหาคำตอบสำหรับคำถามและปัญหาทั่วไป</p>
+        <p>ค้นหาคำตอบสำหรับคำถามและปัญหาทั่วไป</p>
     </div>
 
     <!-- Search -->
-    <div class="bg-white rounded-lg shadow-sm p-6">
-        <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i class="fas fa-search text-gray-400"></i>
-            </div>
-            <input type="text" id="searchHelp" class="block w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="ค้นหาหัวข้อช่วยเหลือ...">
+    <div class="search-card animate-in delay-1">
+        <div class="search-input-wrapper">
+            <input type="text" id="searchHelp" placeholder="ค้นหาหัวข้อช่วยเหลือ..." />
         </div>
     </div>
 
-    <!-- FAQ Sections -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Sidebar -->
-        <div class="lg:col-span-1">
-            <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">หมวดหมู่</h3>
-                <nav class="space-y-2">
-                    <button onclick="scrollToSection('getting-started')" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors">
-                        <i class="fas fa-play-circle mr-2 text-blue-600"></i> เริ่มต้นใช้งาน
-                    </button>
-                    <button onclick="scrollToSection('students')" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors">
-                        <i class="fas fa-users mr-2 text-green-600"></i> จัดการนักศึกษา
-                    </button>
-                    <button onclick="scrollToSection('projects')" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors">
-                        <i class="fas fa-project-diagram mr-2 text-purple-600"></i> โครงงาน
-                    </button>
-                    <button onclick="scrollToSection('alumni')" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors">
-                        <i class="fas fa-graduation-cap mr-2 text-orange-600"></i> ศิษย์เก่า
-                    </button>
-                    <button onclick="scrollToSection('internships')" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors">
-                        <i class="fas fa-building mr-2 text-red-600"></i> สถานที่ฝึกงาน
-                    </button>
-                    <button onclick="scrollToSection('account')" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors">
-                        <i class="fas fa-user-cog mr-2 text-gray-600"></i> บัญชี
-                    </button>
-                </nav>
-            </div>
+    <!-- Main Layout -->
+    <div class="help-layout">
+        <!-- Sidebar Navigation -->
+        <div class="help-sidebar animate-in delay-2">
+            <button onclick="scrollToSection('getting-started')" class="nav-btn">
+                <i class="fas fa-play-circle" style="color: #0071e3;"></i>
+                <span>เริ่มต้นใช้งาน</span>
+            </button>
+            <button onclick="scrollToSection('students')" class="nav-btn">
+                <i class="fas fa-users" style="color: #34c759;"></i>
+                <span>จัดการนักศึกษา</span>
+            </button>
+            <button onclick="scrollToSection('projects')" class="nav-btn">
+                <i class="fas fa-project-diagram" style="color: #af52de;"></i>
+                <span>โครงงาน</span>
+            </button>
+            <button onclick="scrollToSection('alumni')" class="nav-btn">
+                <i class="fas fa-graduation-cap" style="color: #ff9500;"></i>
+                <span>ศิษย์เก่า</span>
+            </button>
+            <button onclick="scrollToSection('internships')" class="nav-btn">
+                <i class="fas fa-building" style="color: #ff3b30;"></i>
+                <span>สถานที่ฝึกงาน</span>
+            </button>
+            <button onclick="scrollToSection('account')" class="nav-btn">
+                <i class="fas fa-user-cog" style="color: #86868b;"></i>
+                <span>บัญชี</span>
+            </button>
         </div>
 
         <!-- Content -->
-        <div class="lg:col-span-2 space-y-6">
+        <div class="help-content">
             <!-- Getting Started -->
-            <section id="getting-started" class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-play-circle text-blue-600 mr-2"></i> เริ่มต้นใช้งาน
+            <section id="getting-started" class="help-section animate-in delay-1">
+                <h2>
+                    <i class="fas fa-play-circle"></i> เริ่มต้นใช้งาน
                 </h2>
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">ระบบนี้คืออะไร?</h3>
-                        <p class="text-gray-600">ระบบนี้ออกแบบมาเพื่อจัดการข้อมูลนักศึกษา โครงงาน ศิษย์เก่า และสถานที่ฝึกงานของสาขาวิชาวิทยาการคอมพิวเตอร์ มหาวิทยาลัยราชภัฏเพชรบูรณ์</p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">ฉันสามารถทำอะไรได้บ้าง?</h3>
-                        <ul class="text-gray-600 list-disc list-inside space-y-1">
-                            <li>จัดการข้อมูลนักศึกษา เพิ่มแก้ไขและลบ</li>
-                            <li>ติดตามและจัดการโครงงานนักศึกษา</li>
-                            <li>เก็บข้อมูลศิษย์เก่าและสถิติการไปทำงาน</li>
-                            <li>บันทึกข้อมูลสถานที่ฝึกงานของนักศึกษา</li>
-                            <li>ดูรายงานและสถิติอื่น ๆ</li>
-                        </ul>
-                    </div>
+                <div class="help-subsection">
+                    <h3>ระบบนี้คืออะไร?</h3>
+                    <p>ระบบนี้ออกแบบมาเพื่อจัดการข้อมูลนักศึกษา โครงงาน ศิษย์เก่า และสถานที่ฝึกงานของสาขาวิชาวิทยาการคอมพิวเตอร์ มหาวิทยาลัยราชภัฏเพชรบูรณ์</p>
+                </div>
+                <div class="help-subsection">
+                    <h3>ฉันสามารถทำอะไรได้บ้าง?</h3>
+                    <ul>
+                        <li>จัดการข้อมูลนักศึกษา เพิ่มแก้ไขและลบ</li>
+                        <li>ติดตามและจัดการโครงงานนักศึกษา</li>
+                        <li>เก็บข้อมูลศิษย์เก่าและสถิติการไปทำงาน</li>
+                        <li>บันทึกข้อมูลสถานที่ฝึกงานของนักศึกษา</li>
+                        <li>ดูรายงานและสถิติอื่น ๆ</li>
+                    </ul>
                 </div>
             </section>
 
             <!-- Students -->
-            <section id="students" class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-users text-green-600 mr-2"></i> จัดการนักศึกษา
+            <section id="students" class="help-section animate-in delay-1">
+                <h2>
+                    <i class="fas fa-users"></i> จัดการนักศึกษา
                 </h2>
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">📝 วิธีเพิ่มนักศึกษา</h3>
-                        <ol class="text-gray-600 list-decimal list-inside space-y-1 bg-gray-50 p-3 rounded">
-                            <li>ไปที่หน้า "จัดการนักศึกษา"</li>
-                            <li>คลิกปุ่ม "เพิ่มข้อมูล"</li>
-                            <li>กรอกข้อมูลรหัสนักศึกษา ชื่อ นามสกุล อีเมล และเบอร์โทร</li>
-                            <li>คลิก "บันทึกข้อมูล"</li>
-                        </ol>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">🔍 วิธีค้นหานักศึกษา</h3>
-                        <p class="text-gray-600">ใช้ช่อง "ค้นหา" และพิมพ์ชื่อหรือรหัสนักศึกษา ผลลัพธ์จะแสดงตามที่ค้นหาเรียลไทม์</p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">✏️ วิธีแก้ไขข้อมูล</h3>
-                        <p class="text-gray-600">คลิกปุ่ม "แก้ไข" ในแถวของนักศึกษา แล้วปรับเปลี่ยนข้อมูลตามต้องการ</p>
-                    </div>
+                <div class="help-subsection">
+                    <h3>📝 วิธีเพิ่มนักศึกษา</h3>
+                    <ol>
+                        <li>ไปที่หน้า "จัดการนักศึกษา"</li>
+                        <li>คลิกปุ่ม "เพิ่มข้อมูล"</li>
+                        <li>กรอกข้อมูลรหัสนักศึกษา ชื่อ นามสกุล อีเมล และเบอร์โทร</li>
+                        <li>คลิก "บันทึกข้อมูล"</li>
+                    </ol>
+                </div>
+                <div class="help-subsection">
+                    <h3>🔍 วิธีค้นหานักศึกษา</h3>
+                    <p>ใช้ช่อง "ค้นหา" และพิมพ์ชื่อหรือรหัสนักศึกษา ผลลัพธ์จะแสดงตามที่ค้นหาเรียลไทม์</p>
+                </div>
+                <div class="help-subsection">
+                    <h3>✏️ วิธีแก้ไขข้อมูล</h3>
+                    <p>คลิกปุ่ม "แก้ไข" ในแถวของนักศึกษา แล้วปรับเปลี่ยนข้อมูลตามต้องการ</p>
                 </div>
             </section>
 
             <!-- Projects -->
-            <section id="projects" class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-project-diagram text-purple-600 mr-2"></i> จัดการโครงงาน
+            <section id="projects" class="help-section animate-in delay-2">
+                <h2>
+                    <i class="fas fa-project-diagram"></i> จัดการโครงงาน
                 </h2>
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">📌 สถานะโครงงาน</h3>
-                        <div class="grid grid-cols-2 gap-2 text-sm text-gray-600">
-                            <div>🟠 เสนอโครงงาน - ยังไม่อนุมัติ</div>
-                            <div>🔵 กำลังดำเนินการ - กำลังทำ</div>
-                            <div>🟢 เสร็จสิ้น - สำเร็จแล้ว</div>
-                            <div>🔴 ยกเลิก - ไม่ดำเนินการต่อ</div>
-                        </div>
+                <div class="help-subsection">
+                    <h3>📌 สถานะโครงงาน</h3>
+                    <div class="status-grid">
+                        <div class="status-item">🟠 <strong>เสนอโครงงาน</strong> - ยังไม่อนุมัติ</div>
+                        <div class="status-item">🔵 <strong>กำลังดำเนินการ</strong> - กำลังทำ</div>
+                        <div class="status-item">🟢 <strong>เสร็จสิ้น</strong> - สำเร็จแล้ว</div>
+                        <div class="status-item">🔴 <strong>ยกเลิก</strong> - ไม่ดำเนินการต่อ</div>
                     </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">📊 โครงงานของฉัน</h3>
-                        <p class="text-gray-600">คลิก "โครงงานของฉัน" เพื่อดูเฉพาะโครงงานที่คุณเป็นสมาชิก</p>
-                    </div>
+                </div>
+                <div class="help-subsection">
+                    <h3>📊 โครงงานของฉัน</h3>
+                    <p>คลิก "โครงงานของฉัน" เพื่อดูเฉพาะโครงงานที่คุณเป็นสมาชิก</p>
                 </div>
             </section>
 
             <!-- Alumni -->
-            <section id="alumni" class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-graduation-cap text-orange-600 mr-2"></i> จัดการศิษย์เก่า
+            <section id="alumni" class="help-section animate-in delay-2">
+                <h2>
+                    <i class="fas fa-graduation-cap"></i> จัดการศิษย์เก่า
                 </h2>
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">📋 บันทึกข้อมูลศิษย์เก่า</h3>
-                        <p class="text-gray-600">ระบบช่วยให้คุณติดตามศิษย์เก่า วุฒิการศึกษา สถานที่ทำงาน และข้อมูลการติดต่อ</p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">📊 ดูรายงาน</h3>
-                        <p class="text-gray-600">ไปที่ "รายงานสถิติ" เพื่อดูข้อมูลศิษย์เก่า จำนวนผู้ได้งาน ที่ตั้งงาน และสถิติอื่น ๆ</p>
-                    </div>
+                <div class="help-subsection">
+                    <h3>📋 บันทึกข้อมูลศิษย์เก่า</h3>
+                    <p>ระบบช่วยให้คุณติดตามศิษย์เก่า วุฒิการศึกษา สถานที่ทำงาน และข้อมูลการติดต่อ</p>
+                </div>
+                <div class="help-subsection">
+                    <h3>📊 ดูรายงาน</h3>
+                    <p>ไปที่ "รายงานสถิติ" เพื่อดูข้อมูลศิษย์เก่า จำนวนผู้ได้งาน ที่ตั้งงาน และสถิติอื่น ๆ</p>
                 </div>
             </section>
 
             <!-- Internships -->
-            <section id="internships" class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-building text-red-600 mr-2"></i> บันทึกสถานที่ฝึกงาน
+            <section id="internships" class="help-section animate-in delay-3">
+                <h2>
+                    <i class="fas fa-building"></i> บันทึกสถานที่ฝึกงาน
                 </h2>
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">🏢 เพิ่มข้อมูลสถานที่ฝึกงาน</h3>
-                        <ol class="text-gray-600 list-decimal list-inside space-y-1 bg-gray-50 p-3 rounded">
-                            <li>ไปที่หน้า "สถานที่ฝึกงาน"</li>
-                            <li>คลิก "เพิ่มข้อมูล"</li>
-                            <li>กรอกรหัสนักศึกษา ชื่อ ชื่อบริษัท ตำแหน่ง วันที่เริ่มและสิ้นสุด</li>
-                            <li>บันทึกข้อมูล</li>
-                        </ol>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">📅 สถานะฝึกงาน</h3>
-                        <div class="text-gray-600 space-y-1">
-                            <div>🟠 รอดำเนินการ - ยังไม่เริ่ม</div>
-                            <div>🔵 กำลังฝึกงาน - กำลังฝึก</div>
-                            <div>🟢 เสร็จสิ้น - ฝึกเสร็จแล้ว</div>
-                        </div>
+                <div class="help-subsection">
+                    <h3>🏢 เพิ่มข้อมูลสถานที่ฝึกงาน</h3>
+                    <ol>
+                        <li>ไปที่หน้า "สถานที่ฝึกงาน"</li>
+                        <li>คลิก "เพิ่มข้อมูล"</li>
+                        <li>กรอกรหัสนักศึกษา ชื่อ ชื่อบริษัท ตำแหน่ง วันที่เริ่มและสิ้นสุด</li>
+                        <li>บันทึกข้อมูล</li>
+                    </ol>
+                </div>
+                <div class="help-subsection">
+                    <h3>📅 สถานะฝึกงาน</h3>
+                    <div class="status-grid">
+                        <div class="status-item">🟠 <strong>รอดำเนินการ</strong> - ยังไม่เริ่ม</div>
+                        <div class="status-item">🔵 <strong>กำลังฝึกงาน</strong> - กำลังฝึก</div>
+                        <div class="status-item">🟢 <strong>เสร็จสิ้น</strong> - ฝึกเสร็จแล้ว</div>
                     </div>
                 </div>
             </section>
 
             <!-- Account -->
-            <section id="account" class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-user-cog text-gray-600 mr-2"></i> บัญชีของคุณ
+            <section id="account" class="help-section animate-in delay-3">
+                <h2>
+                    <i class="fas fa-user-cog"></i> บัญชีของคุณ
                 </h2>
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">👤 ดูโปรไฟล์</h3>
-                        <p class="text-gray-600">คลิกที่ชื่อหรือไอคอนโปรไฟล์ที่มุมบนขวา เพื่อดูข้อมูลบัญชีของคุณ</p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">🔐 ความปลอดภัย</h3>
-                        <p class="text-gray-600">แนะนำให้เปลี่ยนรหัสผ่านอย่างน้อยทุก 3 เดือน</p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">🚪 ออกจากระบบ</h3>
-                        <p class="text-gray-600">คลิก "ออกจากระบบ" เพื่อออกจากระบบอย่างปลอดภัย</p>
-                    </div>
+                <div class="help-subsection">
+                    <h3>👤 ดูโปรไฟล์</h3>
+                    <p>คลิกที่ชื่อหรือไอคอนโปรไฟล์ที่มุมบนขวา เพื่อดูข้อมูลบัญชีของคุณ</p>
+                </div>
+                <div class="help-subsection">
+                    <h3>🔐 ความปลอดภัย</h3>
+                    <p>แนะนำให้เปลี่ยนรหัสผ่านอย่างน้อยทุก 3 เดือน</p>
+                </div>
+                <div class="help-subsection">
+                    <h3>🚪 ออกจากระบบ</h3>
+                    <p>คลิก "ออกจากระบบ" เพื่อออกจากระบบอย่างปลอดภัย</p>
                 </div>
             </section>
 
             <!-- Support -->
-            <section class="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h2 class="text-xl font-bold text-blue-900 mb-3 flex items-center">
-                    <i class="fas fa-headset text-blue-600 mr-2"></i> ต้องการความช่วยเหลือเพิ่มเติม?
+            <div class="support-section animate-in delay-3">
+                <h2>
+                    <i class="fas fa-headset"></i> ต้องการความช่วยเหลือเพิ่มเติม?
                 </h2>
-                <p class="text-blue-800 mb-4">หากคุณมีคำถามที่ไม่ได้รับคำตอบในหน้านี้ สามารถติดต่อ:</p>
-                <div class="space-y-2 text-blue-800">
-                    <p><i class="fas fa-envelope mr-2"></i> อีเมล: cs.support@pcru.ac.th</p>
-                    <p><i class="fas fa-phone mr-2"></i> โทรศัพท์: 042-XXXXXX</p>
-                    <p><i class="fas fa-map-marker-alt mr-2"></i> สาขาวิชาวิทยาการคอมพิวเตอร์ มหาวิทยาลัยราชภัฏเพชรบูรณ์</p>
+                <p>หากคุณมีคำถามที่ไม่ได้รับคำตอบในหน้านี้ สามารถติดต่อเราได้:</p>
+                <div class="support-info">
+                    <div class="support-item">
+                        <i class="fas fa-envelope"></i>
+                        <span><strong>อีเมล:</strong> cs.support@pcru.ac.th</span>
+                    </div>
+                    <div class="support-item">
+                        <i class="fas fa-phone"></i>
+                        <span><strong>โทรศัพท์:</strong> 042-XXXXXX</span>
+                    </div>
+                    <div class="support-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span><strong>ที่อยู่:</strong> สาขาวิชาวิทยาการคอมพิวเตอร์ มหาวิทยาลัยราชภัฏเพชรบูรณ์</span>
+                    </div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
 </div>
@@ -211,9 +517,9 @@ function scrollToSection(sectionId) {
     }
 }
 
-document.getElementById('searchHelp').addEventListener('keyup', function(e) {
+document.getElementById('searchHelp')?.addEventListener('keyup', function(e) {
     const searchTerm = e.target.value.toLowerCase();
-    const sections = document.querySelectorAll('section');
+    const sections = document.querySelectorAll('.help-section, .support-section');
     
     sections.forEach(section => {
         const text = section.innerText.toLowerCase();
