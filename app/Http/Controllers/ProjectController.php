@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -293,6 +294,8 @@ class ProjectController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        $this->validateMemberNames($request, $validator);
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -368,6 +371,8 @@ class ProjectController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        $this->validateMemberNames($request, $validator);
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -390,6 +395,31 @@ class ProjectController extends Controller
                 'message' => 'แก้ไขโครงงานสำเร็จ (Demo Mode)',
                 'data' => array_merge($request->all(), ['id' => $id])
             ]);
+        }
+    }
+
+    private function validateMemberNames(Request $request, $validator)
+    {
+        $members = $request->input('members', []);
+        if (!is_array($members)) {
+            return;
+        }
+
+        $invalidNames = [];
+        foreach ($members as $member) {
+            $memberName = trim((string) $member);
+            if ($memberName === '') {
+                continue;
+            }
+
+            $exists = Student::whereRaw("TRIM(CONCAT(first_name, ' ', last_name)) = ?", [$memberName])->exists();
+            if (!$exists) {
+                $invalidNames[] = $memberName;
+            }
+        }
+
+        if (!empty($invalidNames)) {
+            $validator->errors()->add('members', 'สมาชิกบางคนไม่มีในระบบ: ' . implode(', ', array_unique($invalidNames)));
         }
     }
 

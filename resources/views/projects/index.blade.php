@@ -1058,7 +1058,8 @@
                     <div class="col-12">
                         <label class="form-label">สมาชิกในกลุ่ม</label>
                         <div class="members-container" id="membersContainer">
-                            <input type="text" class="members-input" id="memberInput" placeholder="พิมพ์ชื่อแล้วกด Enter เพื่อเพิ่ม">
+                            <input type="text" class="members-input" id="memberInput" list="studentNamesList" placeholder="พิมพ์ชื่อแล้วกด Enter เพื่อเพิ่ม">
+                            <datalist id="studentNamesList"></datalist>
                         </div>
                         <input type="hidden" name="members" id="membersHidden">
                         <small class="text-muted">กด Enter หรือ , (จุลภาค) เพื่อเพิ่มสมาชิก</small>
@@ -1152,6 +1153,7 @@ $(document).ready(function(){
     var members = [];
     var currentViewProject = null;
     var currentUserName = '{{ auth()->user()->name ?? '' }}';
+    var validStudentNames = [];
     
     // Filter state
     var filterStatus = '';
@@ -1166,6 +1168,29 @@ $(document).ready(function(){
         'completed': 'เสร็จสิ้น',
         'cancelled': 'ยกเลิก'
     };
+
+    function loadStudentNames() {
+        $.ajax({
+            url: '{{ route('students.list') }}',
+            method: 'GET',
+            success: function(res) {
+                validStudentNames = (res.results || []).map(function(student) {
+                    return student.student_name;
+                });
+                if (currentUserName && !validStudentNames.includes(currentUserName)) {
+                    validStudentNames.push(currentUserName);
+                }
+                var datalist = $('#studentNamesList');
+                datalist.empty();
+                validStudentNames.forEach(function(name) {
+                    datalist.append('<option value="' + $('<div>').text(name).html() + '"></option>');
+                });
+            },
+            error: function() {
+                console.warn('ไม่สามารถโหลดรายชื่อนักศึกษาได้');
+            }
+        });
+    }
 
     // Load Data
     function loadData() {
@@ -1267,6 +1292,7 @@ $(document).ready(function(){
     }
 
     // Initial load
+    loadStudentNames();
     loadData();
 
     // Refresh button
@@ -1481,16 +1507,45 @@ $(document).ready(function(){
         var input = $('#memberInput').val().trim();
         if (!input) return;
 
+        var added = [];
+        var invalidNames = [];
+
         input.split(',').map(function(name) {
             return name.trim();
         }).filter(function(name) {
-            return name.length > 0 && !members.includes(name);
+            return name.length > 0;
         }).forEach(function(name) {
-            members.push(name);
+            if (!validStudentNames.includes(name)) {
+                invalidNames.push(name);
+                return;
+            }
+            if (!members.includes(name)) {
+                members.push(name);
+                added.push(name);
+            }
         });
 
-        renderMemberTags();
+        if (invalidNames.length > 0) {
+            alert('ชื่อสมาชิกต่อไปนี้ไม่มีในระบบ: ' + invalidNames.join(', '));
+        }
+
+        if (added.length > 0) {
+            renderMemberTags();
+        }
+
         $('#memberInput').val('');
+    }
+
+    function validateMembersBeforeSave() {
+        addMembersFromInput();
+        var invalidNames = members.filter(function(name) {
+            return !validStudentNames.includes(name);
+        });
+        if (invalidNames.length > 0) {
+            alert('ไม่สามารถบันทึกได้ เพราะสมาชิกต่อไปนี้ไม่มีในระบบ: ' + invalidNames.join(', '));
+            return false;
+        }
+        return true;
     }
 
     $('#memberInput').on('keydown', function(e) {
@@ -1555,6 +1610,8 @@ $(document).ready(function(){
         resetForm();
         openModal('เพิ่มโครงงานใหม่');
     });
+
+    loadStudentNames();
 
     // Close modal
     $('#closeModal, #cancelModalBtn').on('click', closeModal);
@@ -1648,6 +1705,9 @@ $(document).ready(function(){
     // Save project
     $('#saveProjectBtn').on('click', function(e) {
         e.preventDefault();
+        if (!validateMembersBeforeSave()) {
+            return;
+        }
         var id = $('#project_id').val();
         var url = projectsBaseUrl;
         var method = 'POST';
