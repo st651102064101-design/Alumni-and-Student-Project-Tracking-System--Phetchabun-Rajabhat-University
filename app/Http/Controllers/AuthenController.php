@@ -37,16 +37,17 @@ class AuthenController extends Controller
         return redirect()->route('dashboard');
     }
 
-    function index()
+    public function index()
     {
-        if ($this->shouldBypassLogin()) {
-            return $this->mockLogin();
-        }
-
         return view('authen.login');
     }
 
-    function verify(Request $request)
+    public function mockup()
+    {
+        return $this->mockLogin();
+    }
+
+    public function verify(Request $request)
     {
         $username = $request->username;
         $password = $request->password;

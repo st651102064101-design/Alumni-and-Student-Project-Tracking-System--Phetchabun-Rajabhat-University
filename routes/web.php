@@ -33,6 +33,7 @@ Route::get('/fix-permissions', function () {
 Route::get('/', [AuthenController::class, 'index']);
 
 Route::get('login', [AuthenController::class, 'index'])->name('login');
+Route::get('mockup', [AuthenController::class, 'mockup'])->name('mockup');
 
 Route::post('verify', [AuthenController::class, 'verify'])->name('login.verify');
 
