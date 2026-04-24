@@ -1,0 +1,5 @@
+.cs-news-admin-wrap .cs-list-item{margin-bottom:8px;}
+.cs-gallery-previews{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+.cs-gallery-item{position:relative;border:1px solid #eee;padding:6px;border-radius:6px;}
+.cs-gallery-item img{display:block;max-width:120px;height:auto;}
+.cs-gallery-item .button{position:absolute;right:6px;top:6px;}

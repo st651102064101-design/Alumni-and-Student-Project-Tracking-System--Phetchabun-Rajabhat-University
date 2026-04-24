@@ -1,0 +1,5 @@
+.cs-news-frontend{font-family:inherit;max-width:900px;margin:24px auto;padding:18px;background:#fff;border-radius:12px;border:1px solid #eee;}
+.cs-meta-box{background:#f5f5f5;padding:12px;border-radius:8px;margin-bottom:12px;}
+.cs-intro{font-size:16px;margin-bottom:18px;}
+.cs-gallery-frontend{display:flex;gap:8px;flex-wrap:wrap;}
+.cs-gallery-item img{max-width:220px;border-radius:6px;}
