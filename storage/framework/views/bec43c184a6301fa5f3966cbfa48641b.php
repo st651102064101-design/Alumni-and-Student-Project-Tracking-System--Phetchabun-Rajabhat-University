@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Student Management System')</title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <title><?php echo $__env->yieldContent('title', 'Student Management System'); ?></title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -810,47 +810,47 @@
         }
     </style>
 
-    @stack('styles')
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 <body>
 
-    {{-- YouTube-Style Header --}}
+    
     <header class="yt-header">
-        {{-- Left Section --}}
+        
         <div class="yt-header-start">
             <button type="button" class="yt-menu-btn" id="menuToggle" title="เมนู">
                 <i class="bi bi-list"></i>
             </button>
-            <a href="{{ url('/') }}" class="yt-logo">
+            <a href="<?php echo e(url('/')); ?>" class="yt-logo">
                 <i class="bi bi-mortarboard-fill yt-logo-icon"></i>
                 <span class="yt-logo-text">EduSystem</span>
             </a>
         </div>
 
-        {{-- Center Section - Search --}}
+        
         <div class="yt-header-center">
         </div>
 
-        {{-- Right Section --}}
+        
         <div class="yt-header-end">
-            {{-- Mobile Search Button --}}
+            
             <button class="yt-icon-btn yt-search-mobile-btn" id="mobileSearchBtn" style="display: none;">
                 <i class="bi bi-search"></i>
             </button>
 
-            {{-- Dark Mode Toggle --}}
+            
             <button type="button" class="yt-icon-btn" id="toggleDark" title="โหมดมืด/สว่าง">
                 <i class="bi bi-moon" id="darkModeIcon"></i>
             </button>
 
-            {{-- Notifications --}}
+            
             <div class="position-relative">
                 <button type="button" class="yt-icon-btn" id="notificationBtn" title="การแจ้งเตือน">
                     <i class="bi bi-bell"></i>
                     <span class="yt-notification-badge">3</span>
                 </button>
                 
-                {{-- Notification Dropdown --}}
+                
                 <div class="yt-notification-dropdown" id="notificationDropdown">
                     <div class="yt-notification-header">
                         <h6>การแจ้งเตือน</h6>
@@ -891,28 +891,28 @@
                 </div>
             </div>
 
-            {{-- User Profile --}}
+            
             <div class="position-relative">
                 <button type="button" class="yt-user-btn" id="userBtn">
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode((auth()->user()->first_name ?? 'Admin') . '+' . (auth()->user()->last_name ?? 'User')) }}&background=0D8ABC&color=fff" alt="Profile">
+                    <img src="https://ui-avatars.com/api/?name=<?php echo e(urlencode((auth()->user()->first_name ?? 'Admin') . '+' . (auth()->user()->last_name ?? 'User'))); ?>&background=0D8ABC&color=fff" alt="Profile">
                 </button>
 
-                {{-- User Dropdown --}}
+                
                 <div class="yt-user-dropdown" id="userDropdown">
                     <div class="yt-user-dropdown-header">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode((auth()->user()->first_name ?? 'Admin') . '+' . (auth()->user()->last_name ?? 'User')) }}&background=0D8ABC&color=fff" class="yt-user-dropdown-avatar" alt="Profile">
+                        <img src="https://ui-avatars.com/api/?name=<?php echo e(urlencode((auth()->user()->first_name ?? 'Admin') . '+' . (auth()->user()->last_name ?? 'User'))); ?>&background=0D8ABC&color=fff" class="yt-user-dropdown-avatar" alt="Profile">
                         <div class="yt-user-dropdown-info">
-                            <h6>{{ (auth()->user()->first_name ?? 'Admin') . ' ' . (auth()->user()->last_name ?? 'User') }}</h6>
-                            <p>{{ auth()->user()->email ?? 'admin@example.com' }}</p>
-                            <a href="{{ url('/profile') }}" class="yt-user-dropdown-link">จัดการบัญชีของคุณ</a>
+                            <h6><?php echo e((auth()->user()->first_name ?? 'Admin') . ' ' . (auth()->user()->last_name ?? 'User')); ?></h6>
+                            <p><?php echo e(auth()->user()->email ?? 'admin@example.com'); ?></p>
+                            <a href="<?php echo e(url('/profile')); ?>" class="yt-user-dropdown-link">จัดการบัญชีของคุณ</a>
                         </div>
                     </div>
                     <div class="yt-user-dropdown-menu">
-                        <a href="{{ url('/profile') }}" class="yt-user-dropdown-item">
+                        <a href="<?php echo e(url('/profile')); ?>" class="yt-user-dropdown-item">
                             <i class="bi bi-person"></i>
                             <span>โปรไฟล์ของฉัน</span>
                         </a>
-                        <a href="{{ url('/settings') }}" class="yt-user-dropdown-item">
+                        <a href="<?php echo e(url('/settings')); ?>" class="yt-user-dropdown-item">
                             <i class="bi bi-gear"></i>
                             <span>ตั้งค่า</span>
                         </a>
@@ -921,12 +921,12 @@
                             <i class="bi bi-moon"></i>
                             <span>โหมดมืด</span>
                         </a>
-                        <a href="{{ url('/help') }}" class="yt-user-dropdown-item">
+                        <a href="<?php echo e(url('/help')); ?>" class="yt-user-dropdown-item">
                             <i class="bi bi-question-circle"></i>
                             <span>ช่วยเหลือ</span>
                         </a>
                         <hr class="yt-user-dropdown-divider">
-                        <a href="{{ route('logout') }}" class="yt-user-dropdown-item">
+                        <a href="<?php echo e(route('logout')); ?>" class="yt-user-dropdown-item">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>ออกจากระบบ</span>
                         </a>
@@ -936,15 +936,15 @@
         </div>
     </header>
 
-    {{-- Include Sidebar Component --}}
-    @include('components.sidebar')
+    
+    <?php echo $__env->make('components.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-    {{-- Main Content --}}
+    
     <main class="yt-main">
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </main>
 
-    {{-- Scripts --}}
+    
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"><\/script>');</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -1074,7 +1074,8 @@
         });
     </script>
 
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 
 </body>
 </html>
+<?php /**PATH /Applications/XAMPP/xamppfiles/htdocs/student/resources/views/layouts/app.blade.php ENDPATH**/ ?>

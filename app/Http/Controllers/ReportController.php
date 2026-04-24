@@ -43,6 +43,22 @@ class ReportController extends Controller
     /**
      * Internship Report - All internships for Computer Science Branch
      */
+    public function myProjectReport()
+    {
+        $user = Auth::user();
+        $myProjects = Project::whereJsonContains('members', $user->name)->get();
+
+        $stats = [
+            'totalProjects' => $myProjects->count(),
+            'completedProjects' => $myProjects->where('status', 'completed')->count(),
+            'inProgressProjects' => $myProjects->where('status', 'in_progress')->count(),
+            'proposalProjects' => $myProjects->where('status', 'proposal')->count(),
+            'totalProjectsByCategory' => $myProjects->groupBy('category')->map->count()->toArray(),
+        ];
+
+        return view('reports.my-projects', compact('user', 'myProjects', 'stats'));
+    }
+
     public function internshipReport()
     {
         // Get all internships grouped by various criteria

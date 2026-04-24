@@ -1,8 +1,8 @@
-@extends('layouts.app')
 
-@section('title', 'จัดการโครงงานนักศึกษา')
 
-@push('styles')
+<?php $__env->startSection('title', 'จัดการโครงงานนักศึกษา'); ?>
+
+<?php $__env->startPush('styles'); ?>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <style>
     /* Apple Design System */
@@ -870,12 +870,12 @@
         color: #aaa;
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="apple-projects">
     <div class="apple-card">
-        {{-- Header with Add button --}}
+        
         <div class="apple-header">
             <h2 class="apple-header-title">โครงงานนักศึกษา</h2>
             <div class="apple-header-actions">
@@ -891,9 +891,9 @@
             </div>
         </div>
 
-        {{-- Filter Bar - Apple Style --}}
+        
         <div class="apple-filter-bar">
-            {{-- Status Segmented Control --}}
+            
             <div class="apple-segmented" id="statusSegment">
                 <button type="button" class="segment-btn active" data-value="">ทั้งหมด</button>
                 <button type="button" class="segment-btn" data-value="proposal">เสนอ</button>
@@ -902,7 +902,7 @@
                 <button type="button" class="segment-btn" data-value="cancelled">ยกเลิก</button>
             </div>
 
-            {{-- Category Dropdown --}}
+            
             <div class="apple-dropdown-chip" id="categoryDropdown">
                 <button type="button" class="dropdown-btn" id="categoryBtn">
                     <i class="bi bi-folder"></i> หมวดหมู่
@@ -919,30 +919,30 @@
                 </div>
             </div>
 
-            {{-- Year Dropdown --}}
+            
             <div class="apple-dropdown-chip" id="yearDropdown">
                 <button type="button" class="dropdown-btn" id="yearBtn">
                     <i class="bi bi-calendar3"></i> ปีการศึกษา
                 </button>
                 <div class="dropdown-menu" id="yearMenu">
                     <div class="dropdown-item active" data-value="">ทั้งหมด</div>
-                    @for($y = 2569; $y >= 2560; $y--)
-                        <div class="dropdown-item" data-value="{{ $y }}">{{ $y }}</div>
-                    @endfor
+                    <?php for($y = 2569; $y >= 2560; $y--): ?>
+                        <div class="dropdown-item" data-value="<?php echo e($y); ?>"><?php echo e($y); ?></div>
+                    <?php endfor; ?>
                 </div>
             </div>
 
-            {{-- Search Box --}}
+            
             <div class="apple-search-box">
                 <i class="bi bi-search search-icon"></i>
                 <input type="text" id="filterSearch" placeholder="ค้นหาโครงงาน...">
             </div>
         </div>
 
-        {{-- Active Filters Display --}}
+        
         <div class="active-filters" id="activeFilters" style="display: none;"></div>
 
-        {{-- Selection action bar --}}
+        
         <div class="selection-bar" id="selectionBar">
             <span>เลือกแล้ว</span>
             <span class="count" id="selectedCount">0</span>
@@ -977,14 +977,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- Data loaded via AJAX --}}
+                    
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-{{-- Project Modal --}}
+
 <div class="apple-modal-backdrop" id="projectModal">
     <div class="apple-modal">
         <div class="apple-modal-header">
@@ -995,7 +995,7 @@
         </div>
         <div class="apple-modal-body">
             <form id="projectForm" class="apple-form">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <input type="hidden" name="id" id="project_id">
 
                 <div class="row g-3">
@@ -1028,9 +1028,9 @@
                         <label class="form-label">ปีการศึกษา <span class="text-danger">*</span></label>
                         <select class="form-select" name="academic_year" id="academic_year" required>
                             <option value="">-- เลือกปี --</option>
-                            @for($y = 2569; $y >= 2560; $y--)
-                                <option value="{{ $y }}">{{ $y }}</option>
-                            @endfor
+                            <?php for($y = 2569; $y >= 2560; $y--): ?>
+                                <option value="<?php echo e($y); ?>"><?php echo e($y); ?></option>
+                            <?php endfor; ?>
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -1091,7 +1091,7 @@
     </div>
 </div>
 
-{{-- Confirm Delete Modal --}}
+
 <div class="apple-modal-backdrop" id="deleteModal">
     <div class="apple-modal" style="max-width: 400px;">
         <div class="apple-modal-header">
@@ -1114,7 +1114,7 @@
     </div>
 </div>
 
-{{-- View Detail Modal --}}
+
 <div class="apple-modal-backdrop" id="viewModal">
     <div class="apple-modal" style="max-width: 600px;">
         <div class="apple-modal-header">
@@ -1124,7 +1124,7 @@
             </button>
         </div>
         <div class="apple-modal-body" id="viewModalBody">
-            {{-- Content loaded via JS --}}
+            
         </div>
         <div class="apple-modal-footer">
             <button type="button" class="apple-btn apple-btn-secondary" onclick="closeViewModal()">ปิด</button>
@@ -1134,17 +1134,17 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script>
 $(document).ready(function(){
-    var projectsDataUrl = '{{ route("projects.data") }}';
-    var projectsBaseUrl = '{{ url("projects") }}';
-    var csrfToken = '{{ csrf_token() }}';
+    var projectsDataUrl = '<?php echo e(route("projects.data")); ?>';
+    var projectsBaseUrl = '<?php echo e(url("projects")); ?>';
+    var csrfToken = '<?php echo e(csrf_token()); ?>';
 
     var table;
     var projectsData = [];
@@ -1790,4 +1790,6 @@ $(document).ready(function(){
     });
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Applications/XAMPP/xamppfiles/htdocs/student/resources/views/projects/index.blade.php ENDPATH**/ ?>

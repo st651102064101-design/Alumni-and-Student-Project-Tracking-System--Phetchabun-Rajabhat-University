@@ -90,5 +90,6 @@ Route::middleware('auth')->group(function () {
 
     // Reports routes (รายงาน)
     Route::get('reports/my-student', [ReportController::class, 'myStudentReport'])->name('reports.myStudent');
+    Route::get('reports/my-projects', [ReportController::class, 'myProjectReport'])->name('reports.myProjects');
     Route::get('reports/internships', [ReportController::class, 'internshipReport'])->name('reports.internships');
 });

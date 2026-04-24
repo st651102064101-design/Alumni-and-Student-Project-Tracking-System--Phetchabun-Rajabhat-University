@@ -362,6 +362,12 @@
         flex-wrap: wrap;
         margin-bottom: 50px;
     }
+    .hero-actions {
+        margin-top: 32px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
     .apple-btn {
         display: inline-flex;
         align-items: center;
@@ -584,7 +590,17 @@
     <!-- Hero Section -->
     <div class="apple-hero animate-in">
         <h1>สาขาวิชาวิทยาการคอมพิวเตอร์</h1>
-        <p>ระบบติดตามศิษย์เก่าและโครงงานนักศึกษา มหาวิทยาลัยราชภัฏเพชรบูรณ์</p>
+        <p>ระบบติดตามศิษย์เก่าและโครงงานนักศึกษา มหาวิทยาลัยราชภัฏเพชรบุรณ์</p>
+        <div class="hero-actions">
+            <a href="{{ route('reports.myProjects') }}" class="apple-btn apple-btn-primary">
+                <i class="bi bi-journal-text"></i>
+                โครงงานของฉัน
+            </a>
+            <a href="{{ route('projects.index') }}" class="apple-btn apple-btn-secondary">
+                <i class="bi bi-journal-code"></i>
+                โครงงานทั้งหมด
+            </a>
+        </div>
         <div class="hero-stats">
             <div class="hero-stat">
                 <div class="hero-stat-number">{{ number_format($stats['totalAlumni'] ?? 0) }}</div>
@@ -782,7 +798,7 @@
             <i class="bi bi-journal-code"></i>
             โครงงานนักศึกษา
         </a>
-        <a href="{{ route('projects.my') }}" class="apple-btn apple-btn-secondary">
+        <a href="{{ route('reports.myProjects') }}" class="apple-btn apple-btn-secondary">
             <i class="bi bi-journal-text"></i>
             โครงงานของฉัน
         </a>

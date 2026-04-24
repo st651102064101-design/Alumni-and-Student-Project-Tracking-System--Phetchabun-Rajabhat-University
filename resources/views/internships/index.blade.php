@@ -599,10 +599,10 @@
                     <td class="text-end align-middle">
                         <div class="action-buttons" role="group" aria-label="Actions">
                             <button type="button" onclick="editData(${item.id})" class="btn btn-outline-primary" title="แก้ไข">
-                                <i class="fas fa-edit"></i>
+                                <i class="bi bi-pencil"></i>
                             </button>
                             <button type="button" onclick="deleteData(${item.id})" class="btn btn-outline-danger" title="ลบ">
-                                <i class="fas fa-trash-alt"></i>
+                                <i class="bi bi-trash"></i>
                             </button>
                         </div>
                     </td>

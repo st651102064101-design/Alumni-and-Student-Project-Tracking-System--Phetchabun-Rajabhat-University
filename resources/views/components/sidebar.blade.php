@@ -18,6 +18,10 @@
             <i class="bi bi-folder-fill"></i>
             <span>โครงงาน</span>
         </a>
+        <a href="{{ route('reports.myProjects') }}" class="yt-mini-item {{ request()->is('reports/my-projects') ? 'active' : '' }}" title="รายงานของฉัน">
+            <i class="bi bi-journal-text"></i>
+            <span>รายงาน</span>
+        </a>
         <a href="{{ url('/internships') }}" class="yt-mini-item {{ request()->is('internships*') ? 'active' : '' }}" title="ฝึกงาน">
             <i class="bi bi-building"></i>
             <span>ฝึกงาน</span>
@@ -83,6 +87,11 @@
             <a href="{{ url('/internships') }}" class="yt-nav-item {{ request()->is('internships*') ? 'active' : '' }}">
                 <i class="bi bi-building"></i>
                 <span>สถานที่ฝึกงาน</span>
+            </a>
+
+            <a href="{{ route('reports.myProjects') }}" class="yt-nav-item {{ request()->is('reports/my-projects') ? 'active' : '' }}">
+                <i class="bi bi-journal-text"></i>
+                <span>รายงานของฉัน</span>
             </a>
         </div>
 

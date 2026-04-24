@@ -1,8 +1,8 @@
-@extends('layouts.app')
 
-@section('title', 'จัดการโครงงานนักศึกษา')
 
-@push('styles')
+<?php $__env->startSection('title', 'จัดการข้อมูลศิษย์เก่า'); ?>
+
+<?php $__env->startPush('styles'); ?>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <style>
     /* Apple Design System */
@@ -18,12 +18,13 @@
         --apple-red-hover: #ff453a;
         --apple-green: #34c759;
         --apple-orange: #ff9500;
+        --apple-purple: #af52de;
         --apple-shadow: 0 2px 12px rgba(0,0,0,0.08);
         --apple-radius: 16px;
         --apple-radius-sm: 10px;
     }
 
-    .apple-projects { max-width: 100%; padding: 0; }
+    .apple-alumni { max-width: 100%; padding: 0; }
 
     /* Card */
     .apple-card {
@@ -98,53 +99,6 @@
         background: #fff;
         color: var(--apple-text);
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    /* Filter Chips */
-    .apple-chips {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .apple-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 14px;
-        border-radius: 980px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        background: #f5f5f7;
-        color: var(--apple-text-secondary);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        border: none;
-        white-space: nowrap;
-    }
-
-    .apple-chip:hover {
-        background: #e8e8ed;
-        color: var(--apple-text);
-    }
-
-    .apple-chip.active {
-        background: var(--apple-blue);
-        color: #fff;
-    }
-
-    .apple-chip i {
-        font-size: 12px;
-    }
-
-    .apple-chip .chip-close {
-        margin-left: 4px;
-        opacity: 0.7;
-    }
-
-    .apple-chip .chip-close:hover {
-        opacity: 1;
     }
 
     /* Dropdown Chip */
@@ -345,7 +299,6 @@
     .apple-btn-primary { background: var(--apple-blue); color: #fff; }
     .apple-btn-primary:hover { background: var(--apple-blue-hover); color: #fff; }
     .apple-btn-secondary { background: #e8e8ed; color: var(--apple-text); }
-    .apple-btn-secondary.active { background: #dcdce0; }
     .apple-btn-secondary:hover { background: #dcdce0; }
     .apple-btn-danger { background: var(--apple-red); color: #fff; }
     .apple-btn-danger:hover { background: var(--apple-red-hover); }
@@ -394,8 +347,8 @@
         overflow: hidden;
         border: 1px solid var(--apple-border);
     }
-    #projectsTable { margin: 0 !important; }
-    #projectsTable thead th {
+    #alumniTable { margin: 0 !important; }
+    #alumniTable thead th {
         font-weight: 600;
         font-size: 0.85rem;
         color: var(--apple-text-secondary);
@@ -404,15 +357,15 @@
         border-bottom: 1px solid var(--apple-border);
         padding: 12px 14px;
     }
-    #projectsTable tbody td {
+    #alumniTable tbody td {
         vertical-align: middle;
         font-size: 0.9rem;
         padding: 10px 14px;
         color: var(--apple-text);
     }
-    #projectsTable tbody tr { transition: background 0.15s; }
-    #projectsTable tbody tr:hover { background: #f5f5f7; }
-    #projectsTable tbody tr.selected { background: rgba(0,113,227,0.08); }
+    #alumniTable tbody tr { transition: background 0.15s; }
+    #alumniTable tbody tr:hover { background: #f5f5f7; }
+    #alumniTable tbody tr.selected { background: rgba(0,113,227,0.08); }
 
     /* Checkbox styling */
     .row-checkbox {
@@ -432,13 +385,14 @@
         font-size: 0.75rem;
         font-weight: 500;
     }
-    .status-badge.proposal { background: #fff3e0; color: #e65100; }
-    .status-badge.in_progress { background: #e3f2fd; color: #1565c0; }
-    .status-badge.completed { background: #e8f5e9; color: #2e7d32; }
-    .status-badge.cancelled { background: #ffebee; color: #c62828; }
+    .status-badge.employed { background: #e8f5e9; color: #2e7d32; }
+    .status-badge.unemployed { background: #ffebee; color: #c62828; }
+    .status-badge.self_employed { background: #fff3e0; color: #e65100; }
+    .status-badge.further_study { background: #e3f2fd; color: #1565c0; }
+    .status-badge.other { background: #f3e5f5; color: #7b1fa2; }
 
-    /* Category Badge */
-    .category-badge {
+    /* Job Type Badge */
+    .job-type-badge {
         display: inline-block;
         padding: 3px 10px;
         border-radius: 980px;
@@ -447,6 +401,9 @@
         background: #f0f0f0;
         color: var(--apple-text-secondary);
     }
+    .job-type-badge.related { background: #e8f5e9; color: #2e7d32; }
+    .job-type-badge.unrelated { background: #fff3e0; color: #e65100; }
+    .job-type-badge.further_study { background: #e3f2fd; color: #1565c0; }
 
     /* DataTables controls */
     .dataTables_wrapper .dataTables_length,
@@ -503,7 +460,7 @@
         border-radius: var(--apple-radius);
         box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         width: 100%;
-        max-width: 680px;
+        max-width: 720px;
         max-height: 90vh;
         overflow: hidden;
         display: flex;
@@ -579,45 +536,9 @@
         min-height: 80px;
         resize: vertical;
     }
-
-    /* Members Tag Input */
-    .members-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        padding: 8px 12px;
-        border: 1px solid var(--apple-border);
-        border-radius: var(--apple-radius-sm);
-        min-height: 44px;
-        background: #fff;
-        cursor: text;
-    }
-    .members-container:focus-within {
-        border-color: var(--apple-blue);
-        box-shadow: 0 0 0 3px rgba(0,113,227,0.15);
-    }
-    .member-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        background: var(--apple-blue);
-        color: #fff;
-        padding: 4px 10px;
-        border-radius: 980px;
-        font-size: 0.8rem;
-    }
-    .member-tag .remove-tag {
-        cursor: pointer;
-        opacity: 0.8;
-    }
-    .member-tag .remove-tag:hover { opacity: 1; }
-    .members-input {
-        border: none;
-        outline: none;
-        flex: 1;
-        min-width: 120px;
-        font-size: 0.9rem;
-        background: transparent;
+    .apple-form .form-control::placeholder {
+        color: var(--apple-text-secondary);
+        opacity: 0.7;
     }
 
     @media (max-width: 768px) {
@@ -656,30 +577,30 @@
         border-color: var(--yt-border-color);
     }
 
-    body.dark #projectsTable thead th {
+    body.dark #alumniTable thead th {
         background: #272727;
         border-bottom-color: var(--yt-border-color);
         color: #aaa;
     }
 
-    body.dark #projectsTable tbody td {
+    body.dark #alumniTable tbody td {
         color: #f1f1f1 !important;
         background: var(--yt-bg-primary);
     }
 
-    body.dark #projectsTable tbody tr {
+    body.dark #alumniTable tbody tr {
         border-bottom: 1px solid #3f3f3f;
     }
 
-    body.dark #projectsTable tbody tr:hover {
+    body.dark #alumniTable tbody tr:hover {
         background: #272727 !important;
     }
 
-    body.dark #projectsTable tbody tr:hover td {
+    body.dark #alumniTable tbody tr:hover td {
         background: #272727 !important;
     }
 
-    body.dark #projectsTable tbody tr.selected td {
+    body.dark #alumniTable tbody tr.selected td {
         background: rgba(62,166,255,0.18) !important;
     }
 
@@ -705,11 +626,6 @@
         background: var(--yt-bg-secondary);
         color: var(--yt-text-primary);
         border-color: var(--yt-border-color) !important;
-    }
-
-    body.dark .dataTables_wrapper .dataTables_filter input:focus,
-    body.dark .dataTables_wrapper .dataTables_length select:focus {
-        box-shadow: 0 0 0 3px rgba(62,166,255,0.20) !important;
     }
 
     body.dark .dataTables_wrapper .dataTables_paginate .page-link {
@@ -740,10 +656,6 @@
         color: var(--yt-text-primary);
     }
 
-    body.dark .apple-modal-close:hover {
-        background: var(--yt-bg-hover);
-    }
-
     body.dark .apple-form .form-control,
     body.dark .apple-form .form-select {
         background: var(--yt-bg-secondary);
@@ -752,28 +664,20 @@
     }
 
     body.dark .apple-form .form-control::placeholder {
-        color: rgba(241,241,241,0.55);
+        color: #aaa;
+        opacity: 1;
     }
 
     body.dark .apple-form .form-label {
         color: var(--yt-text-secondary);
     }
 
-    body.dark .apple-table-wrap a {
-        color: var(--yt-accent-color);
-    }
-
-    /* Dark mode - Apple Filter Controls */
     body.dark .apple-segmented {
         background: #272727;
     }
 
     body.dark .apple-segmented .segment-btn {
         color: #aaa;
-    }
-
-    body.dark .apple-segmented .segment-btn:hover {
-        color: #f1f1f1;
     }
 
     body.dark .apple-segmented .segment-btn.active {
@@ -787,11 +691,6 @@
         color: #aaa;
     }
 
-    body.dark .apple-dropdown-chip .dropdown-btn:hover {
-        background: #3a3a3a;
-        color: #f1f1f1;
-    }
-
     body.dark .apple-dropdown-chip .dropdown-btn.active {
         background: var(--yt-accent-color);
         color: #0f0f0f;
@@ -800,7 +699,6 @@
     body.dark .apple-dropdown-chip .dropdown-menu {
         background: #272727;
         border-color: #3f3f3f;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
 
     body.dark .apple-dropdown-chip .dropdown-item {
@@ -811,17 +709,9 @@
         background: #3a3a3a;
     }
 
-    body.dark .apple-dropdown-chip .dropdown-item.active {
-        color: var(--yt-accent-color);
-    }
-
     body.dark .apple-search-box input {
         background: #272727;
         color: #f1f1f1;
-    }
-
-    body.dark .apple-search-box input:hover {
-        background: #3a3a3a;
     }
 
     body.dark .apple-search-box input:focus {
@@ -829,120 +719,87 @@
         box-shadow: 0 0 0 4px rgba(62,166,255,0.2);
     }
 
-    body.dark .apple-search-box input::placeholder {
-        color: #888;
-    }
+    body.dark .status-badge.employed { background: rgba(52,199,89,0.2); color: #4cd964; }
+    body.dark .status-badge.unemployed { background: rgba(255,59,48,0.2); color: #ff6b6b; }
+    body.dark .status-badge.self_employed { background: rgba(255,149,0,0.2); color: #ffb340; }
+    body.dark .status-badge.further_study { background: rgba(0,113,227,0.2); color: #3ea6ff; }
+    body.dark .status-badge.other { background: rgba(175,82,222,0.2); color: #bf7fff; }
 
-    body.dark .apple-search-box .search-icon {
-        color: #888;
-    }
-
-    body.dark .active-filter-tag {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    body.dark .clear-all-filters {
-        color: #aaa;
-        border-color: #3f3f3f;
-    }
-
-    body.dark .clear-all-filters:hover {
-        background: #272727;
-        color: #f1f1f1;
-    }
-
-    body.dark .members-container {
-        background: var(--yt-bg-secondary);
-        border-color: var(--yt-border-color);
-    }
-
-    body.dark .members-input {
-        color: var(--yt-text-primary);
-    }
-
-    body.dark .status-badge.proposal { background: rgba(255,149,0,0.2); color: #ffb340; }
-    body.dark .status-badge.in_progress { background: rgba(0,113,227,0.2); color: #3ea6ff; }
-    body.dark .status-badge.completed { background: rgba(52,199,89,0.2); color: #4cd964; }
-    body.dark .status-badge.cancelled { background: rgba(255,59,48,0.2); color: #ff6b6b; }
-
-    body.dark .category-badge {
+    body.dark .job-type-badge {
         background: #3f3f3f;
         color: #aaa;
     }
+    body.dark .job-type-badge.related { background: rgba(52,199,89,0.2); color: #4cd964; }
+    body.dark .job-type-badge.unrelated { background: rgba(255,149,0,0.2); color: #ffb340; }
+    body.dark .job-type-badge.further_study { background: rgba(0,113,227,0.2); color: #3ea6ff; }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
-<div class="apple-projects">
+<?php $__env->startSection('content'); ?>
+<div class="apple-alumni">
     <div class="apple-card">
-        {{-- Header with Add button --}}
+        
         <div class="apple-header">
-            <h2 class="apple-header-title">โครงงานนักศึกษา</h2>
+            <h2 class="apple-header-title">ข้อมูลศิษย์เก่า</h2>
             <div class="apple-header-actions">
                 <button type="button" class="apple-btn apple-btn-secondary" id="refreshBtn">
                     <i class="bi bi-arrow-clockwise"></i> รีเฟรช
                 </button>
-                <button type="button" class="apple-btn apple-btn-secondary" id="showMyProjectsBtn">
-                    <i class="bi bi-person"></i> ของฉัน
-                </button>
-                <button type="button" class="apple-btn apple-btn-primary" id="addProjectBtn">
-                    <i class="bi bi-plus-lg"></i> เพิ่มโครงงาน
+                <button type="button" class="apple-btn apple-btn-primary" id="addAlumniBtn">
+                    <i class="bi bi-plus-lg"></i> เพิ่มศิษย์เก่า
                 </button>
             </div>
         </div>
 
-        {{-- Filter Bar - Apple Style --}}
+        
         <div class="apple-filter-bar">
-            {{-- Status Segmented Control --}}
+            
             <div class="apple-segmented" id="statusSegment">
                 <button type="button" class="segment-btn active" data-value="">ทั้งหมด</button>
-                <button type="button" class="segment-btn" data-value="proposal">เสนอ</button>
-                <button type="button" class="segment-btn" data-value="in_progress">ดำเนินการ</button>
-                <button type="button" class="segment-btn" data-value="completed">เสร็จสิ้น</button>
-                <button type="button" class="segment-btn" data-value="cancelled">ยกเลิก</button>
+                <button type="button" class="segment-btn" data-value="employed">มีงานทำ</button>
+                <button type="button" class="segment-btn" data-value="unemployed">ว่างงาน</button>
+                <button type="button" class="segment-btn" data-value="self_employed">ธุรกิจส่วนตัว</button>
+                <button type="button" class="segment-btn" data-value="further_study">ศึกษาต่อ</button>
             </div>
 
-            {{-- Category Dropdown --}}
-            <div class="apple-dropdown-chip" id="categoryDropdown">
-                <button type="button" class="dropdown-btn" id="categoryBtn">
-                    <i class="bi bi-folder"></i> หมวดหมู่
-                </button>
-                <div class="dropdown-menu" id="categoryMenu">
-                    <div class="dropdown-item active" data-value="">ทั้งหมด</div>
-                    <div class="dropdown-item" data-value="Web Application">Web Application</div>
-                    <div class="dropdown-item" data-value="Mobile Application">Mobile Application</div>
-                    <div class="dropdown-item" data-value="AI/Machine Learning">AI / Machine Learning</div>
-                    <div class="dropdown-item" data-value="IoT">IoT</div>
-                    <div class="dropdown-item" data-value="Game Development">Game Development</div>
-                    <div class="dropdown-item" data-value="Data Science">Data Science</div>
-                    <div class="dropdown-item" data-value="Other">อื่นๆ</div>
-                </div>
-            </div>
-
-            {{-- Year Dropdown --}}
+            
             <div class="apple-dropdown-chip" id="yearDropdown">
                 <button type="button" class="dropdown-btn" id="yearBtn">
-                    <i class="bi bi-calendar3"></i> ปีการศึกษา
+                    <i class="bi bi-calendar3"></i> ปีที่จบ
                 </button>
                 <div class="dropdown-menu" id="yearMenu">
                     <div class="dropdown-item active" data-value="">ทั้งหมด</div>
-                    @for($y = 2569; $y >= 2560; $y--)
-                        <div class="dropdown-item" data-value="{{ $y }}">{{ $y }}</div>
-                    @endfor
+                    <?php for($y = 2569; $y >= 2560; $y--): ?>
+                        <div class="dropdown-item" data-value="<?php echo e($y); ?>"><?php echo e($y); ?></div>
+                    <?php endfor; ?>
                 </div>
             </div>
 
-            {{-- Search Box --}}
+            
+            <div class="apple-dropdown-chip" id="jobTypeDropdown">
+                <button type="button" class="dropdown-btn" id="jobTypeBtn">
+                    <i class="bi bi-briefcase"></i> ประเภทงาน
+                </button>
+                <div class="dropdown-menu" id="jobTypeMenu">
+                    <div class="dropdown-item active" data-value="">ทั้งหมด</div>
+                    <div class="dropdown-item" data-value="related">ตรงสาขา</div>
+                    <div class="dropdown-item" data-value="unrelated">ไม่ตรงสาขา</div>
+                    <div class="dropdown-item" data-value="further_study">ศึกษาต่อ</div>
+                    <div class="dropdown-item" data-value="other">อื่นๆ</div>
+                </div>
+            </div>
+
+            
             <div class="apple-search-box">
                 <i class="bi bi-search search-icon"></i>
-                <input type="text" id="filterSearch" placeholder="ค้นหาโครงงาน...">
+                <input type="text" id="filterSearch" placeholder="ค้นหาศิษย์เก่า...">
             </div>
         </div>
 
-        {{-- Active Filters Display --}}
+        
         <div class="active-filters" id="activeFilters" style="display: none;"></div>
 
-        {{-- Selection action bar --}}
+        
         <div class="selection-bar" id="selectionBar">
             <span>เลือกแล้ว</span>
             <span class="count" id="selectedCount">0</span>
@@ -961,137 +818,178 @@
         </div>
 
         <div class="apple-table-wrap table-responsive">
-            <table id="projectsTable" class="table table-hover align-middle" style="width:100%">
+            <table id="alumniTable" class="table table-hover align-middle" style="width:100%">
                 <thead class="table-light">
                     <tr>
                         <th style="width:40px"><input type="checkbox" class="row-checkbox" id="selectAll"></th>
-                        <th>รหัสโครงงาน</th>
-                        <th>ชื่อโครงงาน</th>
-                        <th>หมวดหมู่</th>
-                        <th>ปี/เทอม</th>
-                        <th>อาจารย์ที่ปรึกษา</th>
-                        <th>สมาชิก</th>
+                        <th>รหัสนักศึกษา</th>
+                        <th>ชื่อ-นามสกุล</th>
+                        <th>ปีที่จบ</th>
+                        <th>เกรดเฉลี่ย</th>
+                        <th>ที่ทำงาน</th>
+                        <th>ตำแหน่ง</th>
+                        <th>ประเภทงาน</th>
                         <th>สถานะ</th>
-                        <th>คะแนน</th>
                         <th>จัดการ</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- Data loaded via AJAX --}}
+                    
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-{{-- Project Modal --}}
-<div class="apple-modal-backdrop" id="projectModal">
+
+<div class="apple-modal-backdrop" id="alumniModal">
     <div class="apple-modal">
         <div class="apple-modal-header">
-            <h3 class="apple-modal-title" id="modalTitle">เพิ่มโครงงาน</h3>
+            <h3 class="apple-modal-title" id="modalTitle">เพิ่มศิษย์เก่า</h3>
             <button type="button" class="apple-modal-close" id="closeModal">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
         <div class="apple-modal-body">
-            <form id="projectForm" class="apple-form">
-                @csrf
-                <input type="hidden" name="id" id="project_id">
+            <form id="alumniForm" class="apple-form">
+                <?php echo csrf_field(); ?>
+                <input type="hidden" name="id" id="alumni_id">
 
                 <div class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label">รหัสโครงงาน <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="project_code" id="project_code" required placeholder="เช่น PRJ-2569-001">
-                    </div>
-                    <div class="col-md-8">
-                        <label class="form-label">ชื่อโครงงาน <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="title" id="title" required placeholder="ชื่อโครงงาน">
-                    </div>
+                    
                     <div class="col-12">
-                        <label class="form-label">รายละเอียด</label>
-                        <textarea class="form-control" name="description" id="description" rows="3" placeholder="รายละเอียดโครงงาน..."></textarea>
+                        <h6 class="text-muted mb-2"><i class="bi bi-person me-1"></i> ข้อมูลส่วนตัว</h6>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">หมวดหมู่ <span class="text-danger">*</span></label>
-                        <select class="form-select" name="category" id="category" required>
-                            <option value="">-- เลือกหมวดหมู่ --</option>
-                            <option value="Web Application">Web Application</option>
-                            <option value="Mobile Application">Mobile Application</option>
-                            <option value="AI/Machine Learning">AI/Machine Learning</option>
-                            <option value="IoT">IoT</option>
-                            <option value="Game Development">Game Development</option>
-                            <option value="Data Science">Data Science</option>
-                            <option value="Other">อื่นๆ</option>
+                        <label class="form-label">รหัสนักศึกษา <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="student_code" id="student_code" required placeholder="เช่น 641102064001">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">คำนำหน้า</label>
+                        <select class="form-select" name="prefix" id="prefix">
+                            <option value="">-</option>
+                            <option value="นาย">นาย</option>
+                            <option value="นาง">นาง</option>
+                            <option value="นางสาว">นางสาว</option>
                         </select>
                     </div>
+                    <div class="col-md-3">
+                        <label class="form-label">ชื่อ <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="first_name" id="first_name" required placeholder="ชื่อ">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">นามสกุล <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="last_name" id="last_name" required placeholder="นามสกุล">
+                    </div>
                     <div class="col-md-4">
-                        <label class="form-label">ปีการศึกษา <span class="text-danger">*</span></label>
-                        <select class="form-select" name="academic_year" id="academic_year" required>
+                        <label class="form-label">อีเมล</label>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="email@example.com">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">เบอร์โทร</label>
+                        <input type="text" class="form-control" name="phone" id="phone" placeholder="0812345678">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">จังหวัด</label>
+                        <input type="text" class="form-control" name="province" id="province" placeholder="จังหวัด">
+                    </div>
+
+                    
+                    <div class="col-12 mt-3">
+                        <h6 class="text-muted mb-2"><i class="bi bi-mortarboard me-1"></i> ข้อมูลการศึกษา</h6>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">ปีที่จบ <span class="text-danger">*</span></label>
+                        <select class="form-select" name="graduation_year" id="graduation_year" required>
                             <option value="">-- เลือกปี --</option>
-                            @for($y = 2569; $y >= 2560; $y--)
-                                <option value="{{ $y }}">{{ $y }}</option>
-                            @endfor
+                            <?php for($y = 2569; $y >= 2550; $y--): ?>
+                                <option value="<?php echo e($y); ?>"><?php echo e($y); ?></option>
+                            <?php endfor; ?>
                         </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">วุฒิการศึกษา</label>
+                        <select class="form-select" name="degree" id="degree">
+                            <option value="ปริญญาตรี">ปริญญาตรี</option>
+                            <option value="ปริญญาโท">ปริญญาโท</option>
+                            <option value="ปริญญาเอก">ปริญญาเอก</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">สาขาวิชา</label>
+                        <input type="text" class="form-control" name="major" id="major" value="วิทยาการคอมพิวเตอร์" placeholder="สาขาวิชา">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">เกรดเฉลี่ย</label>
+                        <input type="number" class="form-control" name="gpa" id="gpa" step="0.01" min="0" max="4" placeholder="0.00">
+                    </div>
+
+                    
+                    <div class="col-12 mt-3">
+                        <h6 class="text-muted mb-2"><i class="bi bi-briefcase me-1"></i> ข้อมูลการทำงาน</h6>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">ภาคเรียน <span class="text-danger">*</span></label>
-                        <select class="form-select" name="semester" id="semester" required>
-                            <option value="">-- เลือกเทอม --</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3 (ฤดูร้อน)</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">อาจารย์ที่ปรึกษา</label>
-                        <input type="text" class="form-control" name="advisor" id="advisor" placeholder="ชื่ออาจารย์ที่ปรึกษา">
-                    </div>
-                    <div class="col-md-6">
                         <label class="form-label">สถานะ <span class="text-danger">*</span></label>
                         <select class="form-select" name="status" id="status" required>
-                            <option value="proposal">เสนอโครงงาน</option>
-                            <option value="in_progress">กำลังดำเนินการ</option>
-                            <option value="completed">เสร็จสิ้น</option>
-                            <option value="cancelled">ยกเลิก</option>
+                            <option value="employed">มีงานทำ</option>
+                            <option value="unemployed">ว่างงาน</option>
+                            <option value="self_employed">ธุรกิจส่วนตัว</option>
+                            <option value="further_study">ศึกษาต่อ</option>
+                            <option value="other">อื่นๆ</option>
                         </select>
                     </div>
+                    <div class="col-md-4">
+                        <label class="form-label">ประเภทงาน</label>
+                        <select class="form-select" name="job_type" id="job_type">
+                            <option value="">-- เลือก --</option>
+                            <option value="related">ตรงสาขา</option>
+                            <option value="unrelated">ไม่ตรงสาขา</option>
+                            <option value="further_study">ศึกษาต่อ</option>
+                            <option value="other">อื่นๆ</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">เงินเดือน (บาท)</label>
+                        <input type="number" class="form-control" name="salary" id="salary" min="0" placeholder="เงินเดือน">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">ที่ทำงานปัจจุบัน</label>
+                        <input type="text" class="form-control" name="current_workplace" id="current_workplace" placeholder="ชื่อบริษัท/หน่วยงาน">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">ตำแหน่งงาน</label>
+                        <input type="text" class="form-control" name="current_position" id="current_position" placeholder="ตำแหน่งงาน">
+                    </div>
+
+                    
+                    <div class="col-12 mt-3">
+                        <h6 class="text-muted mb-2"><i class="bi bi-chat-dots me-1"></i> ช่องทางติดต่อ</h6>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Facebook</label>
+                        <input type="text" class="form-control" name="facebook" id="facebook" placeholder="Facebook URL หรือชื่อ">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Line ID</label>
+                        <input type="text" class="form-control" name="line_id" id="line_id" placeholder="Line ID">
+                    </div>
                     <div class="col-12">
-                        <label class="form-label">สมาชิกในกลุ่ม</label>
-                        <div class="members-container" id="membersContainer">
-                            <input type="text" class="members-input" id="memberInput" placeholder="พิมพ์ชื่อแล้วกด Enter เพื่อเพิ่ม">
-                        </div>
-                        <input type="hidden" name="members" id="membersHidden">
-                        <small class="text-muted">กด Enter หรือ , (จุลภาค) เพื่อเพิ่มสมาชิก</small>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">URL เอกสาร</label>
-                        <input type="url" class="form-control" name="document_url" id="document_url" placeholder="https://...">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">URL Repository</label>
-                        <input type="url" class="form-control" name="repository_url" id="repository_url" placeholder="https://github.com/...">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">คะแนน (0-100)</label>
-                        <input type="number" class="form-control" name="score" id="score" min="0" max="100" placeholder="คะแนน">
-                    </div>
-                    <div class="col-md-6">
                         <label class="form-label">หมายเหตุ</label>
-                        <input type="text" class="form-control" name="notes" id="notes" placeholder="หมายเหตุเพิ่มเติม">
+                        <textarea class="form-control" name="notes" id="notes" rows="2" placeholder="หมายเหตุเพิ่มเติม..."></textarea>
                     </div>
                 </div>
             </form>
         </div>
         <div class="apple-modal-footer">
             <button type="button" class="apple-btn apple-btn-secondary" id="cancelModalBtn">ยกเลิก</button>
-            <button type="button" class="apple-btn apple-btn-primary" id="saveProjectBtn">
+            <button type="button" class="apple-btn apple-btn-primary" id="saveAlumniBtn">
                 <i class="bi bi-check-lg"></i> บันทึก
             </button>
         </div>
     </div>
 </div>
 
-{{-- Confirm Delete Modal --}}
+
 <div class="apple-modal-backdrop" id="deleteModal">
     <div class="apple-modal" style="max-width: 400px;">
         <div class="apple-modal-header">
@@ -1114,17 +1012,17 @@
     </div>
 </div>
 
-{{-- View Detail Modal --}}
+
 <div class="apple-modal-backdrop" id="viewModal">
     <div class="apple-modal" style="max-width: 600px;">
         <div class="apple-modal-header">
-            <h3 class="apple-modal-title">รายละเอียดโครงงาน</h3>
+            <h3 class="apple-modal-title">รายละเอียดศิษย์เก่า</h3>
             <button type="button" class="apple-modal-close" onclick="closeViewModal()">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
         <div class="apple-modal-body" id="viewModalBody">
-            {{-- Content loaded via JS --}}
+            
         </div>
         <div class="apple-modal-footer">
             <button type="button" class="apple-btn apple-btn-secondary" onclick="closeViewModal()">ปิด</button>
@@ -1134,36 +1032,43 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script>
 $(document).ready(function(){
-    var projectsDataUrl = '{{ route("projects.data") }}';
-    var projectsBaseUrl = '{{ url("projects") }}';
-    var csrfToken = '{{ csrf_token() }}';
+    var alumniDataUrl = '<?php echo e(route("alumni.data")); ?>';
+    var alumniBaseUrl = '<?php echo e(url("alumni")); ?>';
+    var csrfToken = '<?php echo e(csrf_token()); ?>';
 
     var table;
-    var projectsData = [];
+    var alumniData = [];
     var selectedIds = [];
-    var members = [];
-    var currentViewProject = null;
+    var currentViewAlumni = null;
     
     // Filter state
     var filterStatus = '';
-    var filterCategory = '';
     var filterYear = '';
-    var filterMyProjects = false;
+    var filterJobType = '';
 
     // Status labels
     var statusLabels = {
-        'proposal': 'เสนอโครงงาน',
-        'in_progress': 'กำลังดำเนินการ',
-        'completed': 'เสร็จสิ้น',
-        'cancelled': 'ยกเลิก'
+        'employed': 'มีงานทำ',
+        'unemployed': 'ว่างงาน',
+        'self_employed': 'ธุรกิจส่วนตัว',
+        'further_study': 'ศึกษาต่อ',
+        'other': 'อื่นๆ'
+    };
+
+    // Job type labels
+    var jobTypeLabels = {
+        'related': 'ตรงสาขา',
+        'unrelated': 'ไม่ตรงสาขา',
+        'further_study': 'ศึกษาต่อ',
+        'other': 'อื่นๆ'
     };
 
     // Load Data
@@ -1171,16 +1076,15 @@ $(document).ready(function(){
         var params = {
             search: $('#filterSearch').val(),
             status: filterStatus,
-            category: filterCategory,
             year: filterYear,
-            my: filterMyProjects ? 1 : ''
+            job_type: filterJobType
         };
 
         $.ajax({
-            url: projectsDataUrl,
+            url: alumniDataUrl,
             data: params,
             success: function(res) {
-                projectsData = res.data || [];
+                alumniData = res.data || [];
                 renderTable();
             },
             error: function() {
@@ -1194,38 +1098,36 @@ $(document).ready(function(){
             table.destroy();
         }
 
-        var tbody = $('#projectsTable tbody');
+        var tbody = $('#alumniTable tbody');
         tbody.empty();
 
-        projectsData.forEach(function(p) {
-            var membersArr = p.members || [];
-            var membersHtml = membersArr.length > 0 
-                ? membersArr.slice(0, 2).join(', ') + (membersArr.length > 2 ? ' +' + (membersArr.length - 2) : '')
-                : '-';
-
-            var statusClass = p.status || 'proposal';
-            var statusLabel = statusLabels[p.status] || p.status;
+        alumniData.forEach(function(a) {
+            var fullName = (a.prefix || '') + (a.first_name || '') + ' ' + (a.last_name || '');
+            var statusClass = a.status || 'other';
+            var statusLabel = statusLabels[a.status] || a.status || '-';
+            var jobTypeClass = a.job_type || '';
+            var jobTypeLabel = jobTypeLabels[a.job_type] || a.job_type || '-';
 
             var row = `
-                <tr data-id="${p.id}" data-project='${JSON.stringify(p).replace(/'/g, "&#39;")}'>
-                    <td><input type="checkbox" class="row-checkbox row-select" data-id="${p.id}"></td>
-                    <td><strong>${p.project_code || '-'}</strong></td>
+                <tr data-id="${a.id}" data-alumni='${JSON.stringify(a).replace(/'/g, "&#39;")}'>
+                    <td><input type="checkbox" class="row-checkbox row-select" data-id="${a.id}"></td>
+                    <td><strong>${a.student_code || '-'}</strong></td>
                     <td>
-                        <a href="#" class="view-project text-decoration-none" data-id="${p.id}">
-                            ${p.title || '-'}
+                        <a href="#" class="view-alumni text-decoration-none" data-id="${a.id}">
+                            ${fullName.trim() || '-'}
                         </a>
                     </td>
-                    <td><span class="category-badge">${p.category || '-'}</span></td>
-                    <td>${p.academic_year || '-'}/${p.semester || '-'}</td>
-                    <td>${p.advisor || '-'}</td>
-                    <td title="${membersArr.join(', ')}">${membersHtml}</td>
+                    <td>${a.graduation_year || '-'}</td>
+                    <td>${a.gpa ? parseFloat(a.gpa).toFixed(2) : '-'}</td>
+                    <td>${a.current_workplace || '-'}</td>
+                    <td>${a.current_position || '-'}</td>
+                    <td><span class="job-type-badge ${jobTypeClass}">${jobTypeLabel}</span></td>
                     <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
-                    <td>${p.score !== null ? p.score : '-'}</td>
                     <td>
-                        <button type="button" class="apple-btn apple-btn-sm apple-btn-secondary edit-btn" data-id="${p.id}" title="แก้ไข">
+                        <button type="button" class="apple-btn apple-btn-sm apple-btn-secondary edit-btn" data-id="${a.id}" title="แก้ไข">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <button type="button" class="apple-btn apple-btn-sm apple-btn-danger delete-btn" data-id="${p.id}" title="ลบ">
+                        <button type="button" class="apple-btn apple-btn-sm apple-btn-danger delete-btn" data-id="${a.id}" title="ลบ">
                             <i class="bi bi-trash"></i>
                         </button>
                     </td>
@@ -1234,7 +1136,7 @@ $(document).ready(function(){
             tbody.append(row);
         });
 
-        table = $('#projectsTable').DataTable({
+        table = $('#alumniTable').DataTable({
             paging: true,
             searching: false,
             ordering: true,
@@ -1254,7 +1156,7 @@ $(document).ready(function(){
                     next: "ถัดไป",
                     previous: "ก่อนหน้า"
                 },
-                emptyTable: "ไม่มีข้อมูลโครงงาน"
+                emptyTable: "ไม่มีข้อมูลศิษย์เก่า"
             }
         });
 
@@ -1271,52 +1173,13 @@ $(document).ready(function(){
     // Refresh button
     $('#refreshBtn').on('click', loadData);
 
-    // Show only my projects button
-    $('#showMyProjectsBtn').on('click', function() {
-        filterMyProjects = !filterMyProjects;
-        $(this).toggleClass('apple-btn-primary', filterMyProjects);
-        $(this).toggleClass('apple-btn-secondary', !filterMyProjects);
-        loadData();
-    });
-
-    // ========== Apple-style Filter Controls ==========
+    // ========== Filter Controls ==========
     
-    var categoryLabels = {
-        'Web Application': 'Web Application',
-        'Mobile Application': 'Mobile App',
-        'AI/Machine Learning': 'AI/ML',
-        'IoT': 'IoT',
-        'Game Development': 'Game',
-        'Data Science': 'Data Science',
-        'Other': 'อื่นๆ'
-    };
-
     // Status Segmented Control
     $('#statusSegment .segment-btn').on('click', function() {
         $('#statusSegment .segment-btn').removeClass('active');
         $(this).addClass('active');
         filterStatus = $(this).data('value');
-        updateActiveFiltersDisplay();
-        loadData();
-    });
-
-    // Category Dropdown
-    $('#categoryBtn').on('click', function(e) {
-        e.stopPropagation();
-        closeAllDropdowns();
-        $('#categoryMenu').toggleClass('show');
-    });
-
-    $('#categoryMenu .dropdown-item').on('click', function() {
-        $('#categoryMenu .dropdown-item').removeClass('active');
-        $(this).addClass('active');
-        filterCategory = $(this).data('value');
-        
-        var label = filterCategory ? categoryLabels[filterCategory] || filterCategory : 'หมวดหมู่';
-        $('#categoryBtn').html('<i class="bi bi-folder"></i> ' + label);
-        $('#categoryBtn').toggleClass('active', filterCategory !== '');
-        
-        $('#categoryMenu').removeClass('show');
         updateActiveFiltersDisplay();
         loadData();
     });
@@ -1333,11 +1196,32 @@ $(document).ready(function(){
         $(this).addClass('active');
         filterYear = $(this).data('value');
         
-        var label = filterYear ? 'ปี ' + filterYear : 'ปีการศึกษา';
+        var label = filterYear ? 'ปี ' + filterYear : 'ปีที่จบ';
         $('#yearBtn').html('<i class="bi bi-calendar3"></i> ' + label);
         $('#yearBtn').toggleClass('active', filterYear !== '');
         
         $('#yearMenu').removeClass('show');
+        updateActiveFiltersDisplay();
+        loadData();
+    });
+
+    // Job Type Dropdown
+    $('#jobTypeBtn').on('click', function(e) {
+        e.stopPropagation();
+        closeAllDropdowns();
+        $('#jobTypeMenu').toggleClass('show');
+    });
+
+    $('#jobTypeMenu .dropdown-item').on('click', function() {
+        $('#jobTypeMenu .dropdown-item').removeClass('active');
+        $(this).addClass('active');
+        filterJobType = $(this).data('value');
+        
+        var label = filterJobType ? jobTypeLabels[filterJobType] || filterJobType : 'ประเภทงาน';
+        $('#jobTypeBtn').html('<i class="bi bi-briefcase"></i> ' + label);
+        $('#jobTypeBtn').toggleClass('active', filterJobType !== '');
+        
+        $('#jobTypeMenu').removeClass('show');
         updateActiveFiltersDisplay();
         loadData();
     });
@@ -1356,14 +1240,14 @@ $(document).ready(function(){
         var html = '';
         var hasFilters = false;
 
-        if (filterCategory) {
-            hasFilters = true;
-            html += '<span class="active-filter-tag">' + (categoryLabels[filterCategory] || filterCategory) + ' <i class="bi bi-x remove-filter" data-filter="category"></i></span>';
-        }
-
         if (filterYear) {
             hasFilters = true;
             html += '<span class="active-filter-tag">ปี ' + filterYear + ' <i class="bi bi-x remove-filter" data-filter="year"></i></span>';
+        }
+
+        if (filterJobType) {
+            hasFilters = true;
+            html += '<span class="active-filter-tag">' + (jobTypeLabels[filterJobType] || filterJobType) + ' <i class="bi bi-x remove-filter" data-filter="jobType"></i></span>';
         }
 
         if (hasFilters) {
@@ -1377,14 +1261,14 @@ $(document).ready(function(){
     // Remove individual filter
     $('#activeFilters').on('click', '.remove-filter', function() {
         var filter = $(this).data('filter');
-        if (filter === 'category') {
-            filterCategory = '';
-            $('#categoryMenu .dropdown-item').removeClass('active').first().addClass('active');
-            $('#categoryBtn').html('<i class="bi bi-folder"></i> หมวดหมู่').removeClass('active');
-        } else if (filter === 'year') {
+        if (filter === 'year') {
             filterYear = '';
             $('#yearMenu .dropdown-item').removeClass('active').first().addClass('active');
-            $('#yearBtn').html('<i class="bi bi-calendar3"></i> ปีการศึกษา').removeClass('active');
+            $('#yearBtn').html('<i class="bi bi-calendar3"></i> ปีที่จบ').removeClass('active');
+        } else if (filter === 'jobType') {
+            filterJobType = '';
+            $('#jobTypeMenu .dropdown-item').removeClass('active').first().addClass('active');
+            $('#jobTypeBtn').html('<i class="bi bi-briefcase"></i> ประเภทงาน').removeClass('active');
         }
         updateActiveFiltersDisplay();
         loadData();
@@ -1393,14 +1277,14 @@ $(document).ready(function(){
     // Clear all filters
     $('#activeFilters').on('click', '.clear-all-filters', function() {
         filterStatus = '';
-        filterCategory = '';
         filterYear = '';
+        filterJobType = '';
         
         $('#statusSegment .segment-btn').removeClass('active').first().addClass('active');
-        $('#categoryMenu .dropdown-item').removeClass('active').first().addClass('active');
-        $('#categoryBtn').html('<i class="bi bi-folder"></i> หมวดหมู่').removeClass('active');
         $('#yearMenu .dropdown-item').removeClass('active').first().addClass('active');
-        $('#yearBtn').html('<i class="bi bi-calendar3"></i> ปีการศึกษา').removeClass('active');
+        $('#yearBtn').html('<i class="bi bi-calendar3"></i> ปีที่จบ').removeClass('active');
+        $('#jobTypeMenu .dropdown-item').removeClass('active').first().addClass('active');
+        $('#jobTypeBtn').html('<i class="bi bi-briefcase"></i> ประเภทงาน').removeClass('active');
         $('#filterSearch').val('');
         
         updateActiveFiltersDisplay();
@@ -1414,7 +1298,7 @@ $(document).ready(function(){
         searchTimer = setTimeout(loadData, 300);
     });
 
-    // Selection handling
+    // ========== Selection handling ==========
     function updateSelectionBar() {
         var count = selectedIds.length;
         $('#selectedCount').text(count);
@@ -1443,7 +1327,7 @@ $(document).ready(function(){
     });
 
     // Individual row checkbox
-    $('#projectsTable').on('change', '.row-select', function() {
+    $('#alumniTable').on('change', '.row-select', function() {
         var id = $(this).data('id');
         var tr = $(this).closest('tr');
         if ($(this).is(':checked')) {
@@ -1466,153 +1350,134 @@ $(document).ready(function(){
         updateSelectionBar();
     });
 
-    // Members tag input
-    function renderMemberTags() {
-        $('#membersContainer .member-tag').remove();
-        members.forEach(function(m, i) {
-            var tag = $('<span class="member-tag">' + m + ' <span class="remove-tag" data-index="' + i + '">&times;</span></span>');
-            $('#memberInput').before(tag);
-        });
-        $('#membersHidden').val(JSON.stringify(members));
-    }
-
-    $('#memberInput').on('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ',') {
-            e.preventDefault();
-            var val = $(this).val().trim().replace(',', '');
-            if (val && !members.includes(val)) {
-                members.push(val);
-                renderMemberTags();
-            }
-            $(this).val('');
-        }
-    });
-
-    $('#membersContainer').on('click', '.remove-tag', function() {
-        var index = $(this).data('index');
-        members.splice(index, 1);
-        renderMemberTags();
-    });
-
-    $('#membersContainer').on('click', function() {
-        $('#memberInput').focus();
-    });
-
-    // Modal functions
+    // ========== Modal functions ==========
     function openModal(title) {
-        $('#modalTitle').text(title || 'เพิ่มโครงงาน');
-        $('#projectModal').addClass('show');
+        $('#modalTitle').text(title || 'เพิ่มศิษย์เก่า');
+        $('#alumniModal').addClass('show');
         $('body').css('overflow', 'hidden');
     }
 
     function closeModal() {
-        $('#projectModal').removeClass('show');
+        $('#alumniModal').removeClass('show');
         $('body').css('overflow', '');
         resetForm();
     }
 
     function resetForm() {
-        $('#projectForm')[0].reset();
-        $('#project_id').val('');
-        members = [];
-        renderMemberTags();
+        $('#alumniForm')[0].reset();
+        $('#alumni_id').val('');
+        $('#major').val('วิทยาการคอมพิวเตอร์');
     }
 
-    function openEditModal(project) {
-        openModal('แก้ไขโครงงาน');
-        $('#project_id').val(project.id);
-        $('#project_code').val(project.project_code || '');
-        $('#title').val(project.title || '');
-        $('#description').val(project.description || '');
-        $('#category').val(project.category || '');
-        $('#academic_year').val(project.academic_year || '');
-        $('#semester').val(project.semester || '');
-        $('#advisor').val(project.advisor || '');
-        $('#status').val(project.status || 'proposal');
-        $('#document_url').val(project.document_url || '');
-        $('#repository_url').val(project.repository_url || '');
-        $('#score').val(project.score || '');
-        $('#notes').val(project.notes || '');
-        
-        members = project.members || [];
-        renderMemberTags();
+    function openEditModal(alumni) {
+        openModal('แก้ไขข้อมูลศิษย์เก่า');
+        $('#alumni_id').val(alumni.id);
+        $('#student_code').val(alumni.student_code || '');
+        $('#prefix').val(alumni.prefix || '');
+        $('#first_name').val(alumni.first_name || '');
+        $('#last_name').val(alumni.last_name || '');
+        $('#email').val(alumni.email || '');
+        $('#phone').val(alumni.phone || '');
+        $('#province').val(alumni.province || '');
+        $('#graduation_year').val(alumni.graduation_year || '');
+        $('#degree').val(alumni.degree || 'ปริญญาตรี');
+        $('#major').val(alumni.major || 'วิทยาการคอมพิวเตอร์');
+        $('#gpa').val(alumni.gpa || '');
+        $('#status').val(alumni.status || 'employed');
+        $('#job_type').val(alumni.job_type || '');
+        $('#salary').val(alumni.salary || '');
+        $('#current_workplace').val(alumni.current_workplace || '');
+        $('#current_position').val(alumni.current_position || '');
+        $('#facebook').val(alumni.facebook || '');
+        $('#line_id').val(alumni.line_id || '');
+        $('#notes').val(alumni.notes || '');
     }
 
     // Add button
-    $('#addProjectBtn').on('click', function() {
+    $('#addAlumniBtn').on('click', function() {
         resetForm();
-        openModal('เพิ่มโครงงานใหม่');
+        openModal('เพิ่มศิษย์เก่าใหม่');
     });
 
     // Close modal
     $('#closeModal, #cancelModalBtn').on('click', closeModal);
-    $('#projectModal').on('click', function(e) {
+    $('#alumniModal').on('click', function(e) {
         if (e.target === this) closeModal();
     });
 
     // Edit button in table
-    $('#projectsTable').on('click', '.edit-btn', function() {
+    $('#alumniTable').on('click', '.edit-btn', function() {
         var id = $(this).data('id');
-        var project = projectsData.find(p => p.id === id);
-        if (project) openEditModal(project);
+        var alumni = alumniData.find(a => a.id === id);
+        if (alumni) openEditModal(alumni);
     });
 
     // Edit selected button
     $('#editSelectedBtn').on('click', function() {
         if (selectedIds.length === 1) {
-            var project = projectsData.find(p => p.id === selectedIds[0]);
-            if (project) openEditModal(project);
+            var alumni = alumniData.find(a => a.id === selectedIds[0]);
+            if (alumni) openEditModal(alumni);
         }
     });
 
     // Row double-click to edit
-    $('#projectsTable').on('dblclick', 'tbody tr', function() {
+    $('#alumniTable').on('dblclick', 'tbody tr', function() {
         var id = $(this).data('id');
-        var project = projectsData.find(p => p.id === id);
-        if (project) openEditModal(project);
+        var alumni = alumniData.find(a => a.id === id);
+        if (alumni) openEditModal(alumni);
     });
 
-    // View project
-    $('#projectsTable').on('click', '.view-project', function(e) {
+    // View alumni
+    $('#alumniTable').on('click', '.view-alumni', function(e) {
         e.preventDefault();
         var id = $(this).data('id');
-        var project = projectsData.find(p => p.id === id);
-        if (project) openViewModal(project);
+        var alumni = alumniData.find(a => a.id === id);
+        if (alumni) openViewModal(alumni);
     });
 
-    function openViewModal(project) {
-        currentViewProject = project;
-        var membersArr = project.members || [];
-        var statusLabel = statusLabels[project.status] || project.status;
+    function openViewModal(alumni) {
+        currentViewAlumni = alumni;
+        var fullName = (alumni.prefix || '') + (alumni.first_name || '') + ' ' + (alumni.last_name || '');
+        var statusLabel = statusLabels[alumni.status] || alumni.status || '-';
+        var jobTypeLabel = jobTypeLabels[alumni.job_type] || alumni.job_type || '-';
         
         var html = `
-            <div class="mb-3">
-                <strong>รหัสโครงงาน:</strong> ${project.project_code || '-'}
-            </div>
-            <div class="mb-3">
-                <strong>ชื่อโครงงาน:</strong> ${project.title || '-'}
-            </div>
-            <div class="mb-3">
-                <strong>รายละเอียด:</strong><br>
-                ${project.description || '-'}
+            <div class="row mb-3">
+                <div class="col-md-6"><strong>รหัสนักศึกษา:</strong> ${alumni.student_code || '-'}</div>
+                <div class="col-md-6"><strong>ชื่อ-นามสกุล:</strong> ${fullName.trim() || '-'}</div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-6"><strong>หมวดหมู่:</strong> ${project.category || '-'}</div>
-                <div class="col-md-6"><strong>ปี/เทอม:</strong> ${project.academic_year || '-'}/${project.semester || '-'}</div>
+                <div class="col-md-6"><strong>อีเมล:</strong> ${alumni.email || '-'}</div>
+                <div class="col-md-6"><strong>เบอร์โทร:</strong> ${alumni.phone || '-'}</div>
             </div>
+            <hr>
             <div class="row mb-3">
-                <div class="col-md-6"><strong>อาจารย์ที่ปรึกษา:</strong> ${project.advisor || '-'}</div>
-                <div class="col-md-6"><strong>สถานะ:</strong> <span class="status-badge ${project.status}">${statusLabel}</span></div>
+                <div class="col-md-4"><strong>ปีที่จบ:</strong> ${alumni.graduation_year || '-'}</div>
+                <div class="col-md-4"><strong>วุฒิ:</strong> ${alumni.degree || '-'}</div>
+                <div class="col-md-4"><strong>GPA:</strong> ${alumni.gpa ? parseFloat(alumni.gpa).toFixed(2) : '-'}</div>
             </div>
             <div class="mb-3">
-                <strong>สมาชิก:</strong> ${membersArr.length > 0 ? membersArr.join(', ') : '-'}
+                <strong>สาขาวิชา:</strong> ${alumni.major || '-'}
+            </div>
+            <hr>
+            <div class="row mb-3">
+                <div class="col-md-6"><strong>สถานะ:</strong> <span class="status-badge ${alumni.status}">${statusLabel}</span></div>
+                <div class="col-md-6"><strong>ประเภทงาน:</strong> <span class="job-type-badge ${alumni.job_type || ''}">${jobTypeLabel}</span></div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-6"><strong>คะแนน:</strong> ${project.score !== null ? project.score : '-'}</div>
-                <div class="col-md-6"><strong>หมายเหตุ:</strong> ${project.notes || '-'}</div>
+                <div class="col-md-6"><strong>ที่ทำงาน:</strong> ${alumni.current_workplace || '-'}</div>
+                <div class="col-md-6"><strong>ตำแหน่ง:</strong> ${alumni.current_position || '-'}</div>
             </div>
-            ${project.document_url ? '<div class="mb-3"><strong>เอกสาร:</strong> <a href="' + project.document_url + '" target="_blank">' + project.document_url + '</a></div>' : ''}
-            ${project.repository_url ? '<div class="mb-3"><strong>Repository:</strong> <a href="' + project.repository_url + '" target="_blank">' + project.repository_url + '</a></div>' : ''}
+            <div class="row mb-3">
+                <div class="col-md-6"><strong>เงินเดือน:</strong> ${alumni.salary ? Number(alumni.salary).toLocaleString() + ' บาท' : '-'}</div>
+                <div class="col-md-6"><strong>จังหวัด:</strong> ${alumni.province || '-'}</div>
+            </div>
+            <hr>
+            <div class="row mb-3">
+                <div class="col-md-6"><strong>Facebook:</strong> ${alumni.facebook || '-'}</div>
+                <div class="col-md-6"><strong>Line ID:</strong> ${alumni.line_id || '-'}</div>
+            </div>
+            ${alumni.notes ? '<div class="mb-3"><strong>หมายเหตุ:</strong> ' + alumni.notes + '</div>' : ''}
         `;
         
         $('#viewModalBody').html(html);
@@ -1623,41 +1488,47 @@ $(document).ready(function(){
     window.closeViewModal = function() {
         $('#viewModal').removeClass('show');
         $('body').css('overflow', '');
-        currentViewProject = null;
+        currentViewAlumni = null;
     };
 
     $('#editFromViewBtn').on('click', function() {
-        if (currentViewProject) {
+        if (currentViewAlumni) {
             closeViewModal();
-            openEditModal(currentViewProject);
+            openEditModal(currentViewAlumni);
         }
     });
 
-    // Save project
-    $('#saveProjectBtn').on('click', function(e) {
+    // ========== Save alumni ==========
+    $('#saveAlumniBtn').on('click', function(e) {
         e.preventDefault();
-        var id = $('#project_id').val();
-        var url = projectsBaseUrl;
+        var id = $('#alumni_id').val();
+        var url = alumniBaseUrl;
         var method = 'POST';
         
         if (id) {
-            url = projectsBaseUrl + '/' + id;
+            url = alumniBaseUrl + '/' + id;
             method = 'PUT';
         }
 
         var formData = {
-            project_code: $('#project_code').val(),
-            title: $('#title').val(),
-            description: $('#description').val(),
-            category: $('#category').val(),
-            academic_year: $('#academic_year').val(),
-            semester: $('#semester').val(),
-            advisor: $('#advisor').val(),
+            student_code: $('#student_code').val(),
+            prefix: $('#prefix').val(),
+            first_name: $('#first_name').val(),
+            last_name: $('#last_name').val(),
+            email: $('#email').val(),
+            phone: $('#phone').val(),
+            province: $('#province').val(),
+            graduation_year: $('#graduation_year').val(),
+            degree: $('#degree').val(),
+            major: $('#major').val(),
+            gpa: $('#gpa').val() || null,
             status: $('#status').val(),
-            members: members,
-            document_url: $('#document_url').val(),
-            repository_url: $('#repository_url').val(),
-            score: $('#score').val() || null,
+            job_type: $('#job_type').val(),
+            salary: $('#salary').val() || null,
+            current_workplace: $('#current_workplace').val(),
+            current_position: $('#current_position').val(),
+            facebook: $('#facebook').val(),
+            line_id: $('#line_id').val(),
             notes: $('#notes').val()
         };
 
@@ -1674,7 +1545,7 @@ $(document).ready(function(){
                 if (res.success) {
                     closeModal();
                     loadData();
-                    showToast(id ? 'แก้ไขโครงงานสำเร็จ' : 'เพิ่มโครงงานสำเร็จ', 'success');
+                    showToast(id ? 'แก้ไขข้อมูลสำเร็จ' : 'เพิ่มข้อมูลสำเร็จ', 'success');
                 } else {
                     alert(res.message || 'ไม่สามารถบันทึกข้อมูลได้');
                 }
@@ -1691,7 +1562,7 @@ $(document).ready(function(){
         });
     });
 
-    // Delete Modal
+    // ========== Delete Modal ==========
     var deleteIds = [];
 
     window.closeDeleteModal = function() {
@@ -1702,15 +1573,15 @@ $(document).ready(function(){
     function openDeleteModal(ids) {
         deleteIds = ids;
         var msg = ids.length > 1 
-            ? 'คุณต้องการลบ ' + ids.length + ' โครงงานที่เลือกหรือไม่?'
-            : 'คุณต้องการลบโครงงานนี้หรือไม่?';
+            ? 'คุณต้องการลบ ' + ids.length + ' รายการที่เลือกหรือไม่?'
+            : 'คุณต้องการลบข้อมูลนี้หรือไม่?';
         $('#deleteMessage').text(msg);
         $('#deleteModal').addClass('show');
         $('body').css('overflow', 'hidden');
     }
 
     // Delete button in table
-    $('#projectsTable').on('click', '.delete-btn', function() {
+    $('#alumniTable').on('click', '.delete-btn', function() {
         var id = $(this).data('id');
         openDeleteModal([id]);
     });
@@ -1727,7 +1598,7 @@ $(document).ready(function(){
         if (deleteIds.length === 1) {
             // Single delete
             $.ajax({
-                url: projectsBaseUrl + '/' + deleteIds[0],
+                url: alumniBaseUrl + '/' + deleteIds[0],
                 type: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken,
@@ -1739,7 +1610,7 @@ $(document).ready(function(){
                     selectedIds = selectedIds.filter(id => !deleteIds.includes(id));
                     updateSelectionBar();
                     loadData();
-                    showToast('ลบโครงงานสำเร็จ', 'success');
+                    showToast('ลบข้อมูลสำเร็จ', 'success');
                 },
                 error: function() {
                     alert('เกิดข้อผิดพลาดในการลบ');
@@ -1748,7 +1619,7 @@ $(document).ready(function(){
         } else {
             // Bulk delete
             $.ajax({
-                url: projectsBaseUrl + '/bulk-delete',
+                url: alumniBaseUrl + '/bulk-delete',
                 type: 'POST',
                 data: { ids: deleteIds },
                 headers: {
@@ -1761,7 +1632,7 @@ $(document).ready(function(){
                     selectedIds = [];
                     updateSelectionBar();
                     loadData();
-                    showToast('ลบโครงงานสำเร็จ', 'success');
+                    showToast('ลบข้อมูลสำเร็จ', 'success');
                 },
                 error: function() {
                     alert('เกิดข้อผิดพลาดในการลบบางรายการ');
@@ -1790,4 +1661,6 @@ $(document).ready(function(){
     });
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Applications/XAMPP/xamppfiles/htdocs/student/resources/views/alumni/index.blade.php ENDPATH**/ ?>
