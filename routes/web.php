@@ -39,6 +39,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('logout', [AuthenController::class, 'logout'])->name('logout');
+    Route::get('profile', function () {
+        return view('profile');
+    })->name('profile');
+    Route::get('help', function () {
+        return view('help');
+    })->name('help');
     
     // Students routes
     Route::get('students', function () {
