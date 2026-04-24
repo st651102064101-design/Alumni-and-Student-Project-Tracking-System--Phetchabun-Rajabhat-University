@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
 
     // Projects routes (โครงงานนักศึกษา)
     Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
+    Route::get('projects/my', [ProjectController::class, 'myProjects'])->name('projects.my');
     Route::get('projects/data', [ProjectController::class, 'data'])->name('projects.data');
     Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::get('projects/{id}', [ProjectController::class, 'show'])->name('projects.show');
@@ -66,4 +67,13 @@ Route::middleware('auth')->group(function () {
     Route::put('alumni/{id}', [App\Http\Controllers\AlumniController::class, 'update'])->name('alumni.update');
     Route::delete('alumni/{id}', [App\Http\Controllers\AlumniController::class, 'destroy'])->name('alumni.destroy');
     Route::post('alumni/bulk-delete', [App\Http\Controllers\AlumniController::class, 'bulkDestroy'])->name('alumni.bulkDestroy');
+
+    // Internships routes (สถานที่ฝึกงาน)
+    Route::get('internships', [App\Http\Controllers\InternshipController::class, 'index'])->name('internships.index');
+    Route::get('internships/data', [App\Http\Controllers\InternshipController::class, 'data'])->name('internships.data');
+    Route::post('internships', [App\Http\Controllers\InternshipController::class, 'store'])->name('internships.store');
+    Route::get('internships/{id}', [App\Http\Controllers\InternshipController::class, 'show'])->name('internships.show');
+    Route::put('internships/{id}', [App\Http\Controllers\InternshipController::class, 'update'])->name('internships.update');
+    Route::delete('internships/{id}', [App\Http\Controllers\InternshipController::class, 'destroy'])->name('internships.destroy');
+    Route::post('internships/bulk-delete', [App\Http\Controllers\InternshipController::class, 'bulkDestroy'])->name('internships.bulkDestroy');
 });

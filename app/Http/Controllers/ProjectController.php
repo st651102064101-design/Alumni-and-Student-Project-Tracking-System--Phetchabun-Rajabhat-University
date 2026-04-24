@@ -11,6 +11,11 @@ class ProjectController extends Controller
     /**
      * Display a listing of the projects.
      */
+    public function myProjects()
+    {
+        return view('projects.my_projects');
+    }
+
     public function index()
     {
         return view('projects.index');
@@ -50,6 +55,12 @@ class ProjectController extends Controller
                 $projects->where('academic_year', $request->year);
             }
 
+            // Filter for my projects
+            if ($request->filled('my')) {
+                $userName = auth()->user()->name ?? 'นายกิตติ สุขใจ'; // Mocking user name for testing
+                $projects->whereJsonContains('members', $userName);
+            }
+
             return response()->json([
                 'data' => $projects->orderBy('created_at', 'desc')->get()
             ]);
@@ -79,6 +90,13 @@ class ProjectController extends Controller
             
             if ($request->filled('year')) {
                 $filtered = $filtered->where('academic_year', (int)$request->year);
+            }
+            
+            if ($request->filled('my')) {
+                $userName = auth()->user()->name ?? 'นายกิตติ สุขใจ';
+                $filtered = $filtered->filter(function ($p) use ($userName) {
+                    return in_array($userName, $p['members'] ?? []);
+                });
             }
             
             return response()->json([

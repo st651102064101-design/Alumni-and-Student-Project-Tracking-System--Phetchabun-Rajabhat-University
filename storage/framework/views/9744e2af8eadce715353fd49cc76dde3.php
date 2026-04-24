@@ -785,6 +785,14 @@
             <i class="bi bi-journal-code"></i>
             โครงงานนักศึกษา
         </a>
+        <a href="<?php echo e(route('projects.my')); ?>" class="apple-btn apple-btn-secondary">
+            <i class="bi bi-journal-text"></i>
+            โครงงานของฉัน
+        </a>
+        <a href="<?php echo e(route('internships.index')); ?>" class="apple-btn apple-btn-secondary">
+            <i class="bi bi-building"></i>
+            สถานที่ฝึกงาน
+        </a>
         <a href="<?php echo e(route('alumni.statistics')); ?>" class="apple-btn apple-btn-secondary">
             <i class="bi bi-bar-chart-fill"></i>
             รายงานสถิติ
