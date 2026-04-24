@@ -42,6 +42,9 @@ Route::middleware('auth')->group(function () {
     Route::get('profile', function () {
         return view('profile');
     })->name('profile');
+    Route::get('settings', function () {
+        return view('profile');
+    })->name('settings');
     Route::get('help', function () {
         return view('help');
     })->name('help');
