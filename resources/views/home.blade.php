@@ -790,6 +790,14 @@
             <i class="bi bi-building"></i>
             สถานที่ฝึกงาน
         </a>
+        <a href="{{ route('reports.myStudent') }}" class="apple-btn apple-btn-secondary">
+            <i class="bi bi-person-check"></i>
+            รายงานของฉัน
+        </a>
+        <a href="{{ route('reports.internships') }}" class="apple-btn apple-btn-secondary">
+            <i class="bi bi-graph-up"></i>
+            รายงานฝึกงาน
+        </a>
         <a href="{{ route('alumni.statistics') }}" class="apple-btn apple-btn-secondary">
             <i class="bi bi-bar-chart-fill"></i>
             รายงานสถิติ

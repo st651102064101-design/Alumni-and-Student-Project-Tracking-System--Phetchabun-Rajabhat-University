@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthenController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -85,4 +86,8 @@ Route::middleware('auth')->group(function () {
     Route::put('internships/{id}', [App\Http\Controllers\InternshipController::class, 'update'])->name('internships.update');
     Route::delete('internships/{id}', [App\Http\Controllers\InternshipController::class, 'destroy'])->name('internships.destroy');
     Route::post('internships/bulk-delete', [App\Http\Controllers\InternshipController::class, 'bulkDestroy'])->name('internships.bulkDestroy');
+
+    // Reports routes (รายงาน)
+    Route::get('reports/my-student', [ReportController::class, 'myStudentReport'])->name('reports.myStudent');
+    Route::get('reports/internships', [ReportController::class, 'internshipReport'])->name('reports.internships');
 });
