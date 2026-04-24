@@ -18,6 +18,10 @@
             <i class="bi bi-folder-fill"></i>
             <span>โครงงาน</span>
         </a>
+        <a href="{{ url('/internships') }}" class="yt-mini-item {{ request()->is('internships*') ? 'active' : '' }}" title="ฝึกงาน">
+            <i class="bi bi-building"></i>
+            <span>ฝึกงาน</span>
+        </a>
         <a href="{{ url('/settings') }}" class="yt-mini-item {{ request()->is('settings*') ? 'active' : '' }}" title="จัดการ">
             <i class="bi bi-gear-fill"></i>
             <span>จัดการ</span>
@@ -74,6 +78,12 @@
                     </div>
                 </div>
             </div>
+
+            {{-- จัดการสถานที่ฝึกงาน --}}
+            <a href="{{ url('/internships') }}" class="yt-nav-item {{ request()->is('internships*') ? 'active' : '' }}">
+                <i class="bi bi-building"></i>
+                <span>สถานที่ฝึกงาน</span>
+            </a>
         </div>
 
         <hr class="yt-divider">
